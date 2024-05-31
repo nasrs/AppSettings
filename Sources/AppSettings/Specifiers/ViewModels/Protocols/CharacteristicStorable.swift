@@ -3,7 +3,7 @@
 import Foundation
 
 public protocol CharacteristicStorable {
-    associatedtype Value: Any
+    associatedtype Value: Equatable
     var key: String { get }
     var defaultValue: Value { get }
     var storedContent: Value { get }

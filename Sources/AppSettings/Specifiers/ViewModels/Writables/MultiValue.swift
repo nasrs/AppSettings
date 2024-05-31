@@ -72,7 +72,7 @@ extension Specifier.MultiValue: PathIdentifier {}
 // MARK: CharacteristicStorable
 
 public extension Specifier.MultiValue {
-    class Characteristic: CharacteristicStorable {
+    class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
         public var storedContent: String
@@ -91,6 +91,13 @@ public extension Specifier.MultiValue {
             self.valueForTitle = Dictionary(uniqueKeysWithValues: zip(titles, values))
             self.titleForValue = Dictionary(uniqueKeysWithValues: zip(values, titles))
             _storedContent = .init(key: key, defaultValue: defaultValue, container: container)
+        }
+        
+        public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+            lhs.key == rhs.key &&
+            lhs.defaultValue == rhs.defaultValue &&
+            lhs.titles == rhs.titles &&
+            lhs.values == rhs.values
         }
     }
 }

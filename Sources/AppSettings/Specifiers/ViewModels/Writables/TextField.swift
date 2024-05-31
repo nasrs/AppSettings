@@ -66,8 +66,7 @@ extension Specifier.TextField: PathIdentifier {}
 // MARK: CharacteristicStorable
 
 public extension Specifier.TextField {
-    class Characteristic: CharacteristicStorable {
-        
+    class Characteristic: CharacteristicStorable, Equatable {
         public enum KeyboardType: String, Codable {
             case alphabet = "Alphabet"
             case numbersAndPunctuation = "NumbersAndPunctuation"
@@ -89,6 +88,13 @@ public extension Specifier.TextField {
             self.isSecure = isSecure
             self.keyboard = keyboard
             _storedContent = .init(key: key, defaultValue: defaultValue, container: container)
+        }
+        
+        public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+            lhs.key == rhs.key &&
+            lhs.defaultValue == rhs.defaultValue &&
+            lhs.isSecure == rhs.isSecure &&
+            lhs.keyboard == rhs.keyboard
         }
     }
 }

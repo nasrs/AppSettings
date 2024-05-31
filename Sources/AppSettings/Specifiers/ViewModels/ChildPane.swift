@@ -16,7 +16,7 @@ extension Specifier {
             self.id = id
             self.title = title
             self.characteristic = characteristic
-            self.accessibilityIdentifier = title.replacingOccurrences(of: " ", with: "_").lowercased() + "_navigation"
+            accessibilityIdentifier = title.replacingOccurrences(of: " ", with: "_").lowercased() + "_navigation"
         }
         
         // MARK: Decodable
@@ -41,12 +41,24 @@ extension Specifier {
 extension Specifier.ChildPane: PathIdentifier {}
 
 extension Specifier.ChildPane {
-    public class Characteristic {
+    public class Characteristic: Equatable {
         public let fileName: String
-        public internal(set) var entries: [any SettingEntry] = []
+        public internal(set) var entries: [any SettingEntry]
         
-        internal init(fileName: String) {
+        internal init(fileName: String, entries: [any SettingEntry] = []) {
             self.fileName = fileName
+            self.entries = entries
+        }
+        
+        public static func == (lhs: Specifier.ChildPane.Characteristic,
+                               rhs: Specifier.ChildPane.Characteristic) -> Bool {
+            guard lhs.fileName == rhs.fileName,
+                  lhs.entries.count == rhs.entries.count else { return false }
+            
+            // checking if all entries in lhs.entries are equal to the corresponding entries in rhs.entries.
+            return lhs.entries.enumerated().first(where: {
+                rhs.entries[$0].isEqual($1) == false
+            }).isNil
         }
     }
 }

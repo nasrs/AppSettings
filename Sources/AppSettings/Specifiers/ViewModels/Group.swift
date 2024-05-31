@@ -39,12 +39,30 @@ extension Specifier {
 
 extension Specifier.Group: PathIdentifier {}
 
+extension Equatable {
+    func isEqual(_ other: any Equatable) -> Bool {
+        guard let other = other as? Self else {
+            return false
+        }
+        return self == other
+    }
+}
+
 extension Specifier.Group {
-    public class Characteristic {
+    public class Characteristic: Equatable {
         public internal(set) var entries: [any SettingEntry]
         
         internal init(entries: [any SettingEntry] = []) {
             self.entries = entries
+        }
+        
+        public static func ==(lhs: Specifier.Group.Characteristic, rhs: Specifier.Group.Characteristic) -> Bool {
+            guard lhs.entries.count == rhs.entries.count else { return false }
+            
+            return lhs.entries.enumerated().first(where: {
+                rhs.entries[$0].isEqual($1) == false
+            }).isNil
+            
         }
     }
 }

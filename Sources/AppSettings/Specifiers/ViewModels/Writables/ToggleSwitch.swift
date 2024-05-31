@@ -59,7 +59,7 @@ extension Specifier.ToggleSwitch: PathIdentifier {}
 // MARK: CharacteristicStorable
 
 public extension Specifier.ToggleSwitch {
-    class Characteristic: CharacteristicStorable {
+    class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
         public var storedContent: Bool
@@ -70,6 +70,10 @@ public extension Specifier.ToggleSwitch {
             self.key = key
             self.defaultValue = defaultValue
             _storedContent = .init(key: key, defaultValue: defaultValue, container: container)
+        }
+        
+        public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+            lhs.key == rhs.key && lhs.defaultValue == rhs.defaultValue
         }
     }
 }

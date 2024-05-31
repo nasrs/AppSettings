@@ -1,7 +1,6 @@
 // Copyright © ICS 2024 from aiPhad.com
 
 import SwiftUI
-import UIKit
 
 public struct SettingsRendererView: View {
     @StateObject private var viewModel: SearchViewModel

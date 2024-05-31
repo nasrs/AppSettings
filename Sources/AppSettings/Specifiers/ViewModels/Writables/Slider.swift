@@ -47,7 +47,6 @@ extension Specifier {
         }
         
         enum CodingKeys: String, CodingKey {
-            case title = "Title"
             case specifierKey = "Key"
             case defaultValue = "DefaultValue"
             case minValue = "MinimumValue"
@@ -63,7 +62,7 @@ extension Specifier.Slider: PathIdentifier {}
 // MARK: CharacteristicStorable
 
 public extension Specifier.Slider {
-    class Characteristic: CharacteristicStorable {
+    class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
         public var storedContent: Double
@@ -78,6 +77,13 @@ public extension Specifier.Slider {
             self.minValue = minValue
             self.maxValue = maxValue
             _storedContent = .init(key: key, defaultValue: defaultValue, container: container)
+        }
+        
+        public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+            lhs.key == rhs.key &&
+            lhs.defaultValue == rhs.defaultValue &&
+            lhs.minValue == rhs.minValue &&
+            lhs.maxValue == rhs.maxValue
         }
     }
 }
