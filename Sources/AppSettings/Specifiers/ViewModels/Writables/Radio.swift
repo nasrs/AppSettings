@@ -75,7 +75,7 @@ public extension Specifier.Radio {
         @Storable
         public var storedContent: String
         public let key: String
-        public var defaultValue: String
+        public let defaultValue: String
         public let titles: [String]
         public let values: [String]
         public let valueForTitle: [String: String]
@@ -104,7 +104,10 @@ public extension Specifier.Radio {
 
 extension Specifier.Radio {
     public static func == (lhs: Specifier.Radio, rhs: Specifier.Radio) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.footerText == rhs.footerText &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {
