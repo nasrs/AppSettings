@@ -39,4 +39,39 @@ final class ChildPaneTests: XCTestCase {
         XCTAssertEqual(decoded.title, sut.title)
         XCTAssertEqual(decoded.characteristic.fileName, sut.characteristic.fileName)
     }
+    
+    func testCharacteristicEquatable() throws {
+        // Given
+        let characteristic1 = Specifier.ChildPane.Characteristic(fileName: "test_file",
+                                                                 entries: [mockEntries.textField])
+        
+        let characteristic2 = Specifier.ChildPane.Characteristic(fileName: "test_file",
+                                                                 entries: [mockEntries.textField])
+
+        let characteristic3 = Specifier.ChildPane.Characteristic(fileName: "different_test_file",
+                                                                 entries: [mockEntries.textField])
+        
+        // Then
+        XCTAssertEqual(characteristic1, characteristic2)
+        XCTAssertNotEqual(characteristic1, characteristic3)
+    }
+
+    func testSpecifierEquatable() throws {
+        // Given
+        let characteristic = Specifier.ChildPane.Characteristic(fileName: "test_file",
+                                                                entries: [mockEntries.textField])
+        let childPaneId = UUID()
+        let specifier1 = Specifier.ChildPane(id: childPaneId,
+                                             title: "Child Pane",
+                                             characteristic: characteristic)
+        let specifier2 = Specifier.ChildPane(id: childPaneId,
+                                             title: "Child Pane",
+                                             characteristic: characteristic)
+        let specifier3 = Specifier.ChildPane(title: "Another Child Pane",
+                                             characteristic: characteristic)
+        
+        // Then
+        XCTAssertEqual(specifier1, specifier2)
+        XCTAssertNotEqual(specifier1, specifier3)
+    }
 }
