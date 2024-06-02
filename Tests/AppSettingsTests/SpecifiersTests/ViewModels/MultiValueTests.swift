@@ -46,4 +46,39 @@ final class MultiValueTests: XCTestCase {
         XCTAssertEqual(decoded.title, sut.title)
         XCTAssertEqual(decoded.characteristic, sut.characteristic)
     }
+    
+    func testCharacteristicEquatable() throws {
+        // Given
+        let characteristic1 = Specifier.MultiValue.Characteristic(key: "testKey", defaultValue: "defaultValue", titles: ["Option 1", "Option 2", "Option 3"], values: ["option_1", "option_2", "option_3"])
+        let characteristic2 = Specifier.MultiValue.Characteristic(key: "testKey", defaultValue: "defaultValue", titles: ["Option 1", "Option 2", "Option 3"], values: ["option_1", "option_2", "option_3"])
+        let characteristic3 = Specifier.MultiValue.Characteristic(key: "differentTestKey", defaultValue: "defaultValue", titles: ["Option 1", "Option 2", "Option 3"], values: ["option_1", "option_2", "option_3"])
+        // Then
+        XCTAssertEqual(characteristic1, characteristic2)
+        XCTAssertNotEqual(characteristic1, characteristic3)
+    }
+
+    func test_specifier_equatable() throws {
+        // Given
+        let characteristic = Specifier.MultiValue.Characteristic(key: "testKey", defaultValue: "defaultValue", titles: ["Option 1", "Option 2", "Option 3"], values: ["option_1", "option_2", "option_3"])
+        let sliderId = UUID()
+        let specifier1 = Specifier.MultiValue(id: sliderId,
+                                              title: "slider title",
+                                              characteristic: characteristic)
+        let specifier2 = Specifier.MultiValue(id: sliderId,
+                                              title: "slider title",
+                                              characteristic: characteristic)
+        let specifier3 = Specifier.MultiValue(
+            title: "another slider title",
+            characteristic: Specifier.MultiValue.Characteristic(
+                key: "differentTestKey",
+                defaultValue: "defaultValue",
+                titles: ["Option 1", "Option 2", "Option 3"],
+                values: ["option_1", "option_2", "option_3"]
+            )
+        )
+        
+        // Then
+        XCTAssertEqual(specifier1, specifier2)
+        XCTAssertNotEqual(specifier1, specifier3)
+    }
 }
