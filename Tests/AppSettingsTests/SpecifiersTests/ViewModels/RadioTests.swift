@@ -65,6 +65,29 @@ class RadioTests: XCTestCase {
         XCTAssertEqual(decoded.characteristic, sut.characteristic)
     }
     
+    func testRadioResetSpecifier() {
+        // Given
+        let characteristic = Specifier.Radio.Characteristic(
+            key: "testKey",
+            defaultValue: "option_1",
+            titles: ["Option 1", "Option 2", "Option 3"],
+            values: ["option_1", "option_2", "option_3"],
+            container: mockEntries.mockStorable
+        )
+        let radio = Specifier.Radio(
+            title: "Radio Option",
+            characteristic: characteristic
+        )
+        radio.characteristic.storedContent = "option_2"
+        XCTAssertEqual(radio.characteristic.storedContent, "option_2")
+        
+        // When
+        radio.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(radio.characteristic.storedContent, radio.characteristic.defaultValue)
+    }
+    
     func testCharacteristicEquatable() throws {
         // Given
         let characteristic1 = Specifier.Radio.Characteristic(key: "testKey",

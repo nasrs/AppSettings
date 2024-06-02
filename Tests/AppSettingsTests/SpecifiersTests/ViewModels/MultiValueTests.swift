@@ -47,6 +47,29 @@ final class MultiValueTests: XCTestCase {
         XCTAssertEqual(decoded.characteristic, sut.characteristic)
     }
     
+    func testMultiValueResetSpecifier() {
+        // Given
+        let characteristic = Specifier.MultiValue.Characteristic(
+            key: "testKey",
+            defaultValue: "defaultValue",
+            titles: ["Option 1", "Option 2", "Option 3"],
+            values: ["option_1", "option_2", "option_3"],
+            container: mockEntries.mockStorable
+        )
+        let multiValue = Specifier.MultiValue(
+            title: "MultiValue Title",
+            characteristic: characteristic
+        )
+        multiValue.characteristic.storedContent = "admin"
+        XCTAssertEqual(multiValue.characteristic.storedContent, "admin")
+        
+        // When
+        multiValue.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(multiValue.characteristic.storedContent, multiValue.characteristic.defaultValue)
+    }
+    
     func testCharacteristicEquatable() throws {
         // Given
         let characteristic1 = Specifier.MultiValue.Characteristic(key: "testKey", defaultValue: "defaultValue", titles: ["Option 1", "Option 2", "Option 3"], values: ["option_1", "option_2", "option_3"])

@@ -45,11 +45,18 @@ final class SliderTests: XCTestCase {
         XCTAssertEqual(slider.accessibilityIdentifier, "testKey_slider")
     }
 
-    func testResetSpecifier() throws {
+    func testResetSliderSpecifier() throws {
         // Given
-        let characteristic = Specifier.Slider.Characteristic(key: "testKey", defaultValue: 0, minValue: 0, maxValue: 100)
+        let characteristic = Specifier.Slider.Characteristic(
+            key: "testKey",
+            defaultValue: 0,
+            minValue: 0,
+            maxValue: 100,
+            container: mockEntries.mockStorable
+        )
         let slider = Specifier.Slider(characteristic: characteristic)
         slider.characteristic.storedContent = 50
+        XCTAssertEqual(slider.characteristic.storedContent, 50)
         
         // When
         slider.resetSpecifier()
