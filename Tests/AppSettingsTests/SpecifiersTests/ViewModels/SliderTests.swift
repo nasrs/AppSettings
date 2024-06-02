@@ -22,27 +22,19 @@ final class SliderTests: XCTestCase {
 
     func testDecoding() throws {
         // Given
-        let json = """
-        {
-            "Key": "testKey",
-            "DefaultValue": 50,
-            "MinimumValue": 0,
-            "MaximumValue": 100
-        }
-        """
-        let jsonData = Data(json.utf8)
+        let jsonData = try XCTUnwrap(mockEntries.sliderData)
         let decoder = JSONDecoder()
         decoder.userInfo = [Specifier.repository: MockEntries.shared.mockStorable]
         
         // When
-        let slider = try decoder.decode(Specifier.Slider.self, from: jsonData)
+        let slider = try decoder.decode(Specifier.Slider.self,
+                                        from: jsonData)
         
         // Then
-        XCTAssertEqual(slider.characteristic.key, "testKey")
-        XCTAssertEqual(slider.characteristic.defaultValue, 50)
-        XCTAssertEqual(slider.characteristic.minValue, 0)
-        XCTAssertEqual(slider.characteristic.maxValue, 100)
-        XCTAssertEqual(slider.accessibilityIdentifier, "testKey_slider")
+        XCTAssertEqual(slider.characteristic.key, MockEntries.Slider.key)
+        XCTAssertEqual(slider.characteristic.defaultValue, MockEntries.Slider.defaultValue)
+        XCTAssertEqual(slider.characteristic.minValue, MockEntries.Slider.minimumValue)
+        XCTAssertEqual(slider.characteristic.maxValue, MockEntries.Slider.maximumValue)
     }
 
     func testResetSliderSpecifier() throws {

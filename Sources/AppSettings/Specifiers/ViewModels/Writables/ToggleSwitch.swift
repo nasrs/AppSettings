@@ -82,7 +82,9 @@ public extension Specifier.ToggleSwitch {
 
 extension Specifier.ToggleSwitch {
     public static func == (lhs: Specifier.ToggleSwitch, rhs: Specifier.ToggleSwitch) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {

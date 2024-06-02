@@ -26,9 +26,7 @@ final class TextFieldTests: XCTestCase {
 
     func testTextFieldDecoding() throws {
         // Given
-        guard let json = mockEntries.textFieldData else {
-            throw Error.noDataFound
-        }
+        let json = try XCTUnwrap(mockEntries.textFieldData)
         
         // When
         let decoder = JSONDecoder()
