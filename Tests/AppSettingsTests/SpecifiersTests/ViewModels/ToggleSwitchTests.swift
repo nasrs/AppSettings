@@ -104,12 +104,6 @@ final class ToggleSwitchTests: XCTestCase {
                 )
         )
         
-        var hasher1 = Hasher()
-        toggleSwitch1.hash(into: &hasher1)
-        
-        var hasher2 = Hasher()
-        toggleSwitch2.hash(into: &hasher2)
-        
-        XCTAssertEqual(hasher1.finalize(), hasher2.finalize())
+        XCTAssertEqual(toggleSwitch1.hashValue, toggleSwitch2.hashValue)
     }
 }

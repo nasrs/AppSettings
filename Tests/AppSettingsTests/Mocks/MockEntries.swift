@@ -89,7 +89,7 @@ final class MockEntries {
     var group: Specifier.Group = {
         .init(
             title: Group.title,
-            footerText: Group.footeText,
+            footerText: Group.footerText,
             characteristic: .init()
         )
     }()
@@ -99,7 +99,7 @@ final class MockEntries {
         return childpane
     }
     
-    func group(_ entries: [any SettingEntry]) -> Specifier.Group {
+    func group(with entries: [any SettingEntry]) -> Specifier.Group {
         group.characteristic.entries.append(contentsOf: entries)
         return group
     }

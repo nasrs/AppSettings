@@ -30,7 +30,7 @@ final class TextFieldTests: XCTestCase {
         
         // When
         let decoder = JSONDecoder()
-        decoder.userInfo = [Specifier.repository: mockEntries.mockStorable]
+        decoder.userInfo[Specifier.repository] = mockEntries.mockStorable
         let textField = try decoder.decode(Specifier.TextField.self, from: json)
         
         // Then

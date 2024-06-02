@@ -24,7 +24,7 @@ final class SliderTests: XCTestCase {
         // Given
         let jsonData = try XCTUnwrap(mockEntries.sliderData)
         let decoder = JSONDecoder()
-        decoder.userInfo = [Specifier.repository: MockEntries.shared.mockStorable]
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
         
         // When
         let slider = try decoder.decode(Specifier.Slider.self,

@@ -67,7 +67,9 @@ extension Specifier.ChildPane {
 
 extension Specifier.ChildPane {
     public static func == (lhs: Specifier.ChildPane, rhs: Specifier.ChildPane) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {
