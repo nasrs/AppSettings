@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct RadioSpecifierView: SpecifierSettingsView {
+struct RadioSpecifierView: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.Radio
     

@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-public struct SettingsEntryView: SpecifierSettingsView {
+public struct SettingsEntryView: SpecifierSettingsViewing {
     public var id: UUID { viewModel.id }
     public var viewModel: any SettingEntry
     private var searchIsActive: Bool

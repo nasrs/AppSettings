@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct SliderSpecifierView: SpecifierSettingsView {
+struct SliderSpecifierView: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.Slider
     

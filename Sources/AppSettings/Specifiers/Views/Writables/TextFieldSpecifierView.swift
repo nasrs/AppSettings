@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct TextFieldSpecifierView: SpecifierSettingsView {
+struct TextFieldSpecifierView: SpecifierSettingsViewing {
     private enum Constants {
         static let padding = CGFloat(24)
     }

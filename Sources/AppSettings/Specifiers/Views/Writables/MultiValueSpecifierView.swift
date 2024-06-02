@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct MultiValueSpecifier: SpecifierSettingsView {
+struct MultiValueSpecifier: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.MultiValue
     

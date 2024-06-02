@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct ToggleSpecifierView: SpecifierSettingsView {
+struct ToggleSpecifierView: SpecifierSettingsViewing {
     private let searchIsActive: Bool
     var id: UUID { viewModel.id }
     var viewModel: Specifier.ToggleSwitch
