@@ -1,22 +1,18 @@
 // Copyright © ICS 2024 from aiPhad.com
 
-@testable import AppSettings
 import Foundation
 
 extension MockEntries {
-    var group: Specifier.Group {
-        .init(
-            title: "group",
-            footerText: "group footer",
-            characteristic: .init()
-        )
+    enum Group {
+        static let title = "Group Title"
+        static let footerText = "Some Footer Text"
     }
     
     var groupData: Data? {
         """
         {
-            "Title": "Group Title",
-            "FooterText": "Some Footer Text"",
+            "Title": "\(Group.title)",
+            "FooterText": "\(Group.footerText)",
         }
         """.data(using: .utf8)
     }

@@ -62,7 +62,6 @@ extension Specifier.Group {
             return lhs.entries.enumerated().first(where: {
                 rhs.entries[$0].isEqual($1) == false
             }).isNil
-            
         }
     }
 }
@@ -71,10 +70,13 @@ extension Specifier.Group {
 
 extension Specifier.Group {
     public static func == (lhs: Specifier.Group, rhs: Specifier.Group) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.footerText == rhs.footerText &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine("\(id)\(title)")
     }
 }
