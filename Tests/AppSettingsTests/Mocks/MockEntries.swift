@@ -12,11 +12,88 @@ protocol EntriesMocker {
     var toggle: Specifier.ToggleSwitch { get }
 }
 
-struct MockEntries {
+final class MockEntries {
     static let shared: MockEntries = .init()
     
     let mockStorable: RepositoryStorable = MockStoreEntity()
 
+    lazy var textField: Specifier.TextField = {
+        .init(
+            title: TextField.title,
+            characteristic: .init(
+                key: TextField.key,
+                defaultValue: TextField.defaultValue,
+                keyboard: TextField.keyboardType,
+                container: mockStorable
+            )
+        )
+    }()
+    
+    lazy var multiValue: Specifier.MultiValue = {
+        .init(
+            title: MultiValue.title,
+            characteristic: .init(
+                key: MultiValue.key,
+                defaultValue: MultiValue.defaultValue,
+                titles: MultiValue.titles,
+                values: MultiValue.values,
+                container: mockStorable)
+        )
+    }()
+    
+    lazy var radio: Specifier.Radio = {
+        .init(
+            title: Radio.title,
+            footerText: Radio.footerText,
+            characteristic: .init(
+                key: Radio.key,
+                defaultValue: Radio.defaultValue,
+                titles: Radio.titles,
+                values: Radio.values,
+                container: mockStorable)
+        )
+    }()
+    
+    lazy var slider: Specifier.Slider = {
+        .init(
+            characteristic: .init(
+                key: Slider.key,
+                defaultValue: Slider.defaultValue,
+                minValue: Slider.minimumValue,
+                maxValue: Slider.maximumValue,
+                container: mockStorable
+            )
+        )
+    }()
+    
+    lazy var toggleSwitch: Specifier.ToggleSwitch = {
+        .init(
+            title: ToggleSwitch.title,
+            characteristic: .init(
+                key: ToggleSwitch.key,
+                defaultValue: ToggleSwitch.defaultValue,
+                container: mockStorable
+            )
+        )
+    }()
+    
+    // MARK: Non Storable
+    
+    var childpane: Specifier.ChildPane = {
+        .init(
+            title: ChildPane.title,
+            characteristic: .init(fileName: ChildPane.fileName)
+        )
+    }()
+    
+    var group: Specifier.Group = {
+        .init(
+            title: Group.title,
+            footerText: Group.footeText,
+            characteristic: .init()
+        )
+    }()
+    
     func childPane(with entries: [any SettingEntry]) -> Specifier.ChildPane {
         childpane.characteristic.entries.append(contentsOf: entries)
         return childpane

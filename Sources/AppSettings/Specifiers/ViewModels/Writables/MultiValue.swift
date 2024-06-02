@@ -77,7 +77,7 @@ public extension Specifier.MultiValue {
         @Storable
         public var storedContent: String
         public let key: String
-        public var defaultValue: String
+        public let defaultValue: String
         public let titles: [String]
         public let values: [String]
         public let valueForTitle: [String: String]
@@ -106,7 +106,9 @@ public extension Specifier.MultiValue {
 
 extension Specifier.MultiValue {
     public static func == (lhs: Specifier.MultiValue, rhs: Specifier.MultiValue) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {

@@ -1,37 +1,32 @@
 // Copyright © ICS 2024 from aiPhad.com
 
-@testable import AppSettings
 import Foundation
 
 extension MockEntries {
-    var multiValue: Specifier.MultiValue {
-        .init(
-            title: "MultiValue Title",
-            characteristic: .init(
-                key: "multi_value_example_key",
-                defaultValue: "option_1",
-                titles: ["Option 1", "Option 2", "Option 3"],
-                values: ["option_1", "option_2", "option_3"],
-                container: mockStorable)
-        )
+    enum MultiValue {
+        static let key = "multi_value_example_key"
+        static let title = "MultiValue Title"
+        static let titles = [
+            "Option 1",
+            "Option 2",
+            "Option 3"
+        ]
+        static let values = [
+            "option_1",
+            "option_2",
+            "option_3"
+        ]
+        static let defaultValue = "option_1"
     }
     
     var multiValueData: Data? {
         """
         {
-            "Key": "multi_value_example_key",
-            "Title": "MultiValue Title",
-            "Titles": [
-                "Option 1",
-                "Option 2",
-                "Option 3"
-            ],
-            "Values": [
-                "option_1",
-                "option_2",
-                "option_3"
-            ],
-            "DefaultValue": "option_1"
+            "Key": "\(MultiValue.key)",
+            "Title": "\(MultiValue.title)",
+            "Titles": \(MultiValue.titles),
+            "Values": \(MultiValue.values),
+            "DefaultValue": "\(MultiValue.defaultValue)"
         }
         """.data(using: .utf8)
     }

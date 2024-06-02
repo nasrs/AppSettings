@@ -1,29 +1,23 @@
-// Copyright © ICS 2024 from aiPhad.com
+ // Copyright © ICS 2024 from aiPhad.com
 
-@testable import AppSettings
-import Foundation
+ import Foundation
 
-extension MockEntries {
-    var slider: Specifier.Slider {
-        .init(
-            characteristic: .init(
-                key: "some_key_slider",
-                defaultValue: 12,
-                minValue: 3,
-                maxValue: 17,
-                container: mockStorable
-            )
-        )
-    }
-    
-    var sliderData: Data? {
+ extension MockEntries {
+     enum Slider {
+         static let key = "slider_example_key"
+         static let defaultValue = 17.0
+         static let minimumValue = 7.0
+         static let maximumValue = 56.0
+     }
+     
+     var sliderData: Data? {
         """
         {
-            "Key": "slider_example_key",
-            "DefaultValue": 50.0,
-            "MinimumValue": 5.0,
-            "MaximumValue": 100.0
+            "Key": "\(Slider.key)",
+            "DefaultValue": \(Slider.defaultValue),
+            "MinimumValue": \(Slider.minimumValue),
+            "MaximumValue": \(Slider.maximumValue)
         }
         """.data(using: .utf8)
     }
-}
+ }
