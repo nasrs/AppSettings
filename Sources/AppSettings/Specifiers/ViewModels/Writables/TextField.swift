@@ -103,7 +103,9 @@ public extension Specifier.TextField {
 
 extension Specifier.TextField {
     public static func == (lhs: Specifier.TextField, rhs: Specifier.TextField) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {
