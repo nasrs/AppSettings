@@ -92,7 +92,8 @@ public extension Specifier.Slider {
 
 extension Specifier.Slider {
     public static func == (lhs: Specifier.Slider, rhs: Specifier.Slider) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {
