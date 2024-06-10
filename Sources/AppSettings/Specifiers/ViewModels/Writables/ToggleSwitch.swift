@@ -7,7 +7,7 @@ extension Specifier {
         public var id: UUID = .init()
         public let type: Kind = .toggleSwitch
         public let title: String
-        @Published public internal(set) let characteristic: Characteristic
+        @Published public internal(set) var characteristic: Characteristic
         public let accessibilityIdentifier: String
         public internal(set) var specifierPath: String = ""
         public var specifierKey: String {
