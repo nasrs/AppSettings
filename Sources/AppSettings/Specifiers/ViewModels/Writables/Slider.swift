@@ -4,10 +4,10 @@ import Foundation
 
 extension Specifier {
     public class Slider: SettingSearchable {
+        @Published public internal(set) var characteristic: Characteristic
         public var id: UUID = .init()
         public let type: Kind = .slider
         public let title: String = .empty
-        public let characteristic: Characteristic
         public let accessibilityIdentifier: String
         public internal(set) var specifierPath: String = ""
         public var specifierKey: String {
@@ -65,7 +65,11 @@ public extension Specifier.Slider {
     class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
-        public var storedContent: Double
+        public var storedContent: Double {
+            didSet {
+                objectWillChange.send()
+            }
+        }
         public let key: String
         public let defaultValue: Double
         public let minValue: Double

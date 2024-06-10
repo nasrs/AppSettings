@@ -2,7 +2,7 @@
 
 import Foundation
 
-public protocol CharacteristicStorable {
+public protocol CharacteristicStorable: ObservableObject {
     associatedtype Value: Equatable
     var key: String { get }
     var defaultValue: Value { get }

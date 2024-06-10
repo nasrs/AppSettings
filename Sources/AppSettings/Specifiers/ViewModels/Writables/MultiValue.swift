@@ -4,10 +4,10 @@ import Foundation
 
 extension Specifier {
     public class MultiValue: SettingSearchable {
+        @Published public internal(set) var characteristic: Characteristic
         public var id: UUID = .init()
         public let type: Kind = .multiValue
         public let title: String
-        public let characteristic: Characteristic
         public let accessibilityIdentifier: String
         public internal(set) var specifierPath: String = ""
         public var specifierKey: String {
@@ -75,7 +75,11 @@ public extension Specifier.MultiValue {
     class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
-        public var storedContent: String
+        public var storedContent: String {
+            didSet {
+                objectWillChange.send()
+            }
+        }
         public let key: String
         public let defaultValue: String
         public let titles: [String]

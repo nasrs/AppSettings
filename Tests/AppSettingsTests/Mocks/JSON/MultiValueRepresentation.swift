@@ -16,7 +16,7 @@ extension MockEntries {
             "option_2",
             "option_3"
         ]
-        static let defaultValue = "option_1"
+        static let defaultValue = "option_3"
     }
     
     var multiValueData: Data? {

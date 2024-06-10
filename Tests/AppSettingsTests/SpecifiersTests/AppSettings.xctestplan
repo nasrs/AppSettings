@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "A57395FD-D724-4B50-B55C-C5BB347C32E5",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AppSettingsTests",
+        "name" : "AppSettingsTests"
+      }
+    }
+  ],
+  "version" : 1
+}

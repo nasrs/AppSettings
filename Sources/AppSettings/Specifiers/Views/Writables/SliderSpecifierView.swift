@@ -4,29 +4,27 @@ import SwiftUI
 
 struct SliderSpecifierView: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
-    var viewModel: Specifier.Slider
+    
+    @StateObject var viewModel: Specifier.Slider
     
     private var searchIsActive: Bool
     let minValue: Double
     let maxValue: Double
     
-    @State var value: Double
-    
     init(viewModel: Specifier.Slider, searchActive: Bool) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
         self.searchIsActive = searchActive
-        _value = State<Double>(initialValue: viewModel.characteristic.storedContent)
         minValue = viewModel.characteristic.minValue
         maxValue = viewModel.characteristic.maxValue
     }
     
     var body: some View {
         VStack {
-            Slider(value: $value, in: minValue ... maxValue)
+            Slider(value: $viewModel.characteristic.storedContent, in: minValue ... maxValue)
                 .accessibilityIdentifier(viewModel.accessibilityIdentifier)
             
             HStack {
-                Text("Value: \(value, specifier: "%.1f")")
+                Text("Value: \(viewModel.characteristic.storedContent, specifier: "%.1f")")
                 Spacer()
             }
             
@@ -35,7 +33,7 @@ struct SliderSpecifierView: SpecifierSettingsViewing {
                              specifierTitle: viewModel.title,
                              specifierPath: viewModel.specifierPath)
         }
-        .onChange(of: value) { newValue in
+        .onChange(of: viewModel.characteristic.storedContent) { newValue in
             if viewModel.characteristic.storedContent != newValue {
                 viewModel.characteristic.storedContent = newValue
             }

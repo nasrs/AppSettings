@@ -1,6 +1,7 @@
 // Copyright © ICS 2024 from aiPhad.com
 
 import Foundation
+import Combine
 @testable import AppSettings
 
 protocol EntriesMocker {
@@ -15,7 +16,7 @@ protocol EntriesMocker {
 final class MockEntries {
     static let shared: MockEntries = .init()
     
-    let mockStorable: RepositoryStorable = MockStoreEntity()
+    let mockStorable: MockRepositoryStorable = MockRepositoryStorable()
 
     lazy var textField: Specifier.TextField = {
         .init(

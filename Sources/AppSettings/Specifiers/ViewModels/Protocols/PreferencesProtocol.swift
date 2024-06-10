@@ -17,7 +17,7 @@ extension SettingEntry {
     }
 }
 
-public protocol SettingSearchable: SettingEntry {
+public protocol SettingSearchable: SettingEntry, ObservableObject {
     var specifierKey: String { get }
     var accessibilityIdentifier: String { get }
     func resetSpecifier()

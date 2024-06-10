@@ -7,7 +7,7 @@ extension Specifier {
         public var id: UUID = .init()
         public let type: Kind = .toggleSwitch
         public let title: String
-        public let characteristic: Characteristic
+        @Published public internal(set) let characteristic: Characteristic
         public let accessibilityIdentifier: String
         public internal(set) var specifierPath: String = ""
         public var specifierKey: String {
@@ -62,7 +62,11 @@ public extension Specifier.ToggleSwitch {
     class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
-        public var storedContent: Bool
+        public var storedContent: Bool {
+            didSet {
+                objectWillChange.send()
+            }
+        }
         public let key: String
         public let defaultValue: Bool
         

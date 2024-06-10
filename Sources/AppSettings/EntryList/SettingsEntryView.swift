@@ -25,7 +25,7 @@ public struct SettingsEntryView: SpecifierSettingsViewing {
             GroupSpecifier(viewModel: viewModel, searchIsActive: searchIsActive)
         case .multiValue:
             let viewModel = viewModel as! Specifier.MultiValue
-            MultiValueSpecifier(viewModel: viewModel, searchActive: searchIsActive)
+            MultiValueSpecifierView(viewModel: viewModel, searchActive: searchIsActive)
         case .textField:
             let viewModel = viewModel as! Specifier.TextField
             TextFieldSpecifierView(viewModel: viewModel, searchActive: searchIsActive)
