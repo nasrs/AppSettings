@@ -65,11 +65,7 @@ public extension Specifier.Slider {
     class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
-        public var storedContent: Double {
-            didSet {
-                objectWillChange.send()
-            }
-        }
+        public var storedContent: Double
         public let key: String
         public let defaultValue: Double
         public let minValue: Double

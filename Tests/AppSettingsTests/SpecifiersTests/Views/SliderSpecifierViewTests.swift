@@ -1,35 +1,123 @@
-//
-//  SliderSpecifierViewTests.swift
-//  
-//
-//  Created by Nelson Silvestre on 10/06/2024.
-//
+// Copyright © ICS 2024 from aiPhad.com
 
+@testable import AppSettings
+import Combine
+import ViewInspector
 import XCTest
+import SwiftUI
 
 final class SliderSpecifierViewTests: XCTestCase {
-
+    var viewModel: Specifier.Slider!
+    var cancellable: AnyCancellable?
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        try super.setUpWithError()
+        
+        viewModel = mockEntries.slider
     }
-
+    
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        viewModel = nil
+        cancellable?.cancel()
+        cancellable = nil
+        mockEntries.mockStorable.resetResults()
+        try super.tearDownWithError()
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    
+    func testSliderValueUpdatesCorrectly() throws {
+        let expectation = expectation(description: "Slider should update and propagate result to RepositoryStorable")
+        let expectedValue = 34.5
+        var sliderView = SliderSpecifierView(viewModel: viewModel,
+                                             searchActive: false)
+        
+        cancellable = mockEntries.mockStorable.$results.dropFirst().sink(receiveValue: { received in
+            do {
+                debugPrint("received: \(received)")
+                let receivedValue = try XCTUnwrap(received[MockEntries.Slider.key] as? Double)
+                XCTAssertEqual(receivedValue, expectedValue, accuracy: 0.0001)
+                expectation.fulfill()
+            } catch {
+                XCTFail("failed with error: \(error)")
+            }
+        })
+        
+        sliderView.on(\.didAppear) { view in
+            let sliderView = try XCTUnwrap(view.actualView())
+            let entry = try sliderView.inspect().find(ViewType.Slider.self)
+            XCTAssertEqual(sliderView.sliderValue, MockEntries.Slider.defaultValue)
+            
+            let textString = try sliderView.inspect().find(ViewType.Text.self).string()
+            let expected = String(format: "Value: %.01f", MockEntries.Slider.defaultValue)
+            XCTAssertEqual(textString, expected)
+            
+            // Value represents a percentage on the slider and not the Value
+            let valueToUse = sliderView.sliderPercentageConvert(value: expectedValue)
+            try entry.setValue(valueToUse)
         }
+        
+        ViewHosting.host(view: sliderView)
+        
+        wait(for: [expectation], timeout: 1)
     }
+    
+    func test_textView_shouldContainTheValueOnSlider() {
+        let expectation = expectation(description: "Slider should update and propagate result to RepositoryStorable")
+        let localVM = Specifier.Slider(characteristic:
+                .init(key: "key_string",
+                      defaultValue: 32.0,
+                      minValue: 6,
+                      maxValue: 110)
+        )
+        var sliderView = SliderSpecifierView(viewModel: localVM,
+                                             searchActive: false)
+        
+        sliderView.on(\.didAppear) { view in
+            let sliderView = try XCTUnwrap(view.actualView())
+            let entry = try sliderView.inspect().find(ViewType.Slider.self)
+            XCTAssertEqual(sliderView.sliderValue, localVM.characteristic.defaultValue)
+            let text = try sliderView.inspect().find(ViewType.Text.self).string()
+            let expected = String(format: "Value: %.01f", 32.0)
+            XCTAssertEqual(text, expected)
+            expectation.fulfill()
+        }
+        
+        ViewHosting.host(view: sliderView)
+        wait(for: [expectation], timeout: 1)
+    }
+    
+     func test_searchingKeyView_shouldAlwaysBePresent() throws {
+         let viewModel = Specifier.Slider(characteristic: 
+                .init(key: "key_string", 
+                      defaultValue: 5,
+                      minValue: 1,
+                      maxValue: 10)
+         )
+         var sliderView = SliderSpecifierView(viewModel: viewModel, searchActive: true)
+         
+         let expectation = sliderView.on(\.didAppear) { view in
+             let sliderView = try XCTUnwrap(view.actualView())
+             let entry = try sliderView.inspect().find(ViewType.Slider.self)
+             let sliderAccId = try entry.accessibilityIdentifier()
+             XCTAssertEqual(sliderAccId, viewModel.accessibilityIdentifier)
+         }
+         
+         ViewHosting.host(view: sliderView)
+         wait(for: [expectation], timeout: 1)
+     }
+}
 
+private extension SliderSpecifierView {
+    /// Converts a slider value to a percentage.
+    /// - Parameter value: The value of the slider.
+    /// - Returns: The percentage value of the slider, ranging from 0.0 to 1.0. If the value is outside the range of the minimum and maximum values of the view model's characteristic, 0.0 is returned.
+    func sliderPercentageConvert(value: Double) -> Double {
+        guard value >= viewModel.characteristic.minValue,
+              value <= viewModel.characteristic.maxValue else {
+            return 0.0
+        }
+        
+        // 7 --------- 18
+        // 18
+        return (value - viewModel.characteristic.minValue) / (viewModel.characteristic.maxValue - viewModel.characteristic.minValue)
+    }
 }

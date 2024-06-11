@@ -19,14 +19,14 @@ final class RadioSpecifierViewTests: XCTestCase {
             characteristic: .init(key: "user_defaults_key",
                                   defaultValue: "test_3",
                                   titles: [
-                                    "test 1",
-                                    "test 2",
-                                    "test 3",
+                                      "test 1",
+                                      "test 2",
+                                      "test 3",
                                   ],
                                   values: [
-                                    "test_1",
-                                    "test_2",
-                                    "test_3",
+                                      "test_1",
+                                      "test_2",
+                                      "test_3",
                                   ],
                                   container: mockEntries.mockStorable)
         )
@@ -81,7 +81,7 @@ final class RadioSpecifierViewTests: XCTestCase {
             }
         }
         
-        ViewHosting.host(view:         radioSpecifier)
+        ViewHosting.host(view: radioSpecifier)
         
         wait(for: [expectation], timeout: 1)
     }
@@ -122,14 +122,14 @@ final class RadioSpecifierViewTests: XCTestCase {
             characteristic: .init(key: "user_defaults_key",
                                   defaultValue: "test_4",
                                   titles: [
-                                    "test 1",
-                                    "test 2",
-                                    "test 3"
+                                      "test 1",
+                                      "test 2",
+                                      "test 3",
                                   ],
                                   values: [
-                                    "test_1",
-                                    "test_2",
-                                    "test_3"
+                                      "test_1",
+                                      "test_2",
+                                      "test_3",
                                   ])
         )
         
@@ -143,6 +143,5 @@ final class RadioSpecifierViewTests: XCTestCase {
         ViewHosting.host(view: radioSpecifier)
         
         wait(for: [expectation], timeout: 1)
-        
     }
 }

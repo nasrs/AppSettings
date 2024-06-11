@@ -21,17 +21,14 @@ class MockRepositoryStorable: RepositoryStorable, ObservableObject {
     
     func removeObject(forKey defaultName: String) {
         results.removeValue(forKey: defaultName)
-        objectWillChange.send()
     }
     
     func set(_ value: Any?, forKey defaultName: String) {
         results[defaultName] = value
-        objectWillChange.send()
     }
     
     func register(defaults registrationDictionary: [String : Any]) {
         results = registrationDictionary
-        objectWillChange.send()
     }
     
     func resetResults() {
