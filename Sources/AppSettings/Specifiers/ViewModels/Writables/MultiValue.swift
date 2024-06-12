@@ -13,6 +13,7 @@ extension Specifier {
         public var specifierKey: String {
             characteristic.key
         }
+        private(set) var shouldReset: Bool = true
         
         internal init(id: UUID = .init(), title: String, characteristic: Characteristic) {
             self.id = id
@@ -34,6 +35,8 @@ extension Specifier {
             
             accessibilityIdentifier = "\(specifierKey)_picker"
             
+            shouldReset = try container.decodeIfPresent(Bool.self, forKey: .restartable) ?? true
+            
             if let container = decoder.userInfo[Specifier.repository] as? RepositoryStorable {
                 characteristic = .init(key: specifierKey,
                                        defaultValue: defaultValue,
@@ -46,6 +49,7 @@ extension Specifier {
         }
         
         public func resetSpecifier() {
+            guard shouldReset else { return }
             characteristic.storedContent = characteristic.defaultValue
         }
         
@@ -55,6 +59,7 @@ extension Specifier {
             case defaultValue = "DefaultValue"
             case titles = "Titles"
             case values = "Values"
+            case restartable = "Restartable"
         }
         
         var isValid: Bool {
