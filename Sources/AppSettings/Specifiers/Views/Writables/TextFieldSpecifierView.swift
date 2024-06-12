@@ -9,13 +9,13 @@ struct TextFieldSpecifierView: SpecifierSettingsViewing {
     
     private var searchIsActive: Bool
     var id: UUID { viewModel.id }
-    var viewModel: Specifier.TextField
+    @StateObject var viewModel: Specifier.TextField
     @State var contentBinding: String
     // only used for unit testing purposes
     var didAppear: ((Self) -> Void)?
     
     internal init(viewModel: Specifier.TextField, searchActive: Bool) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
         self.searchIsActive = searchActive
         _contentBinding = State(initialValue: viewModel.characteristic.storedContent)
         self.searchIsActive = searchActive

@@ -61,7 +61,7 @@ final class SliderSpecifierViewTests: XCTestCase {
         wait(for: [expectation], timeout: 1)
     }
     
-    func test_textView_shouldContainTheValueOnSlider() {
+    func test_textView_shouldContainTheDefaultValueOfViewModel() {
         let expectation = expectation(description: "Slider should update and propagate result to RepositoryStorable")
         let localVM = Specifier.Slider(characteristic:
                 .init(key: "key_string",
@@ -75,9 +75,11 @@ final class SliderSpecifierViewTests: XCTestCase {
         sliderView.on(\.didAppear) { view in
             let sliderView = try XCTUnwrap(view.actualView())
             XCTAssertEqual(sliderView.sliderValue, localVM.characteristic.defaultValue)
+            
             let text = try sliderView.inspect().find(ViewType.Text.self).string()
             let expected = String(format: "Value: %.01f", 32.0)
             XCTAssertEqual(text, expected)
+            
             expectation.fulfill()
         }
         
