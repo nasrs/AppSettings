@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "B5BC96CF-5842-4F56-80BE-E221CC089302",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "AppSettingsTests",
+      "name" : "AppSettingsTests"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AppSettingsTests",
+        "name" : "AppSettingsTests"
+      }
+    }
+  ],
+  "version" : 1
+}
