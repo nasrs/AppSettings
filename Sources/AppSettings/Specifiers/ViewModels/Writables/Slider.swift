@@ -4,10 +4,10 @@ import Foundation
 
 extension Specifier {
     public class Slider: SettingSearchable {
+        @Published public internal(set) var characteristic: Characteristic
         public var id: UUID = .init()
         public let type: Kind = .slider
         public let title: String = .empty
-        public let characteristic: Characteristic
         public let accessibilityIdentifier: String
         public internal(set) var specifierPath: String = ""
         public var specifierKey: String {
@@ -47,7 +47,6 @@ extension Specifier {
         }
         
         enum CodingKeys: String, CodingKey {
-            case title = "Title"
             case specifierKey = "Key"
             case defaultValue = "DefaultValue"
             case minValue = "MinimumValue"
@@ -63,7 +62,7 @@ extension Specifier.Slider: PathIdentifier {}
 // MARK: CharacteristicStorable
 
 public extension Specifier.Slider {
-    class Characteristic: CharacteristicStorable {
+    class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
         public var storedContent: Double
@@ -79,6 +78,13 @@ public extension Specifier.Slider {
             self.maxValue = maxValue
             _storedContent = .init(key: key, defaultValue: defaultValue, container: container)
         }
+        
+        public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+            lhs.key == rhs.key &&
+            lhs.defaultValue == rhs.defaultValue &&
+            lhs.minValue == rhs.minValue &&
+            lhs.maxValue == rhs.maxValue
+        }
     }
 }
 
@@ -86,7 +92,8 @@ public extension Specifier.Slider {
 
 extension Specifier.Slider {
     public static func == (lhs: Specifier.Slider, rhs: Specifier.Slider) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {

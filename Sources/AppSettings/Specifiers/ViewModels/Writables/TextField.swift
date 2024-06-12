@@ -4,10 +4,10 @@ import Foundation
 
 extension Specifier {
     public class TextField: SettingSearchable {
+        @Published public internal(set) var characteristic: Characteristic
         public var id: UUID = .init()
         public let type: Kind = .textField
         public let title: String
-        public let characteristic: Characteristic
         public let accessibilityIdentifier: String
         public internal(set) var specifierPath: String = ""
         public var specifierKey: String {
@@ -66,8 +66,7 @@ extension Specifier.TextField: PathIdentifier {}
 // MARK: CharacteristicStorable
 
 public extension Specifier.TextField {
-    class Characteristic: CharacteristicStorable {
-        
+    class Characteristic: CharacteristicStorable, Equatable {
         public enum KeyboardType: String, Codable {
             case alphabet = "Alphabet"
             case numbersAndPunctuation = "NumbersAndPunctuation"
@@ -77,18 +76,29 @@ public extension Specifier.TextField {
         }
         
         @Storable
-        public var storedContent: String?
+        public var storedContent: String {
+            didSet {
+                objectWillChange.send()
+            }
+        }
         public let key: String
-        public let defaultValue: String?
+        public let defaultValue: String
         public let isSecure: Bool
         public let keyboard: KeyboardType
         
-        internal init(key: String, defaultValue: String?, isSecure: Bool = false, keyboard: KeyboardType = .alphabet, container: RepositoryStorable? = nil) {
+        internal init(key: String, defaultValue: String = .empty, isSecure: Bool = false, keyboard: KeyboardType = .alphabet, container: RepositoryStorable? = nil) {
             self.key = key
             self.defaultValue = defaultValue
             self.isSecure = isSecure
             self.keyboard = keyboard
             _storedContent = .init(key: key, defaultValue: defaultValue, container: container)
+        }
+        
+        public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+            lhs.key == rhs.key &&
+            lhs.defaultValue == rhs.defaultValue &&
+            lhs.isSecure == rhs.isSecure &&
+            lhs.keyboard == rhs.keyboard
         }
     }
 }
@@ -97,7 +107,9 @@ public extension Specifier.TextField {
 
 extension Specifier.TextField {
     public static func == (lhs: Specifier.TextField, rhs: Specifier.TextField) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {

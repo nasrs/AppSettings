@@ -2,20 +2,22 @@
 
 import SwiftUI
 
-struct TextFieldSpecifierView: SpecifierSettingsView {
+struct TextFieldSpecifierView: SpecifierSettingsViewing {
     private enum Constants {
         static let padding = CGFloat(24)
     }
     
     private var searchIsActive: Bool
     var id: UUID { viewModel.id }
-    var viewModel: Specifier.TextField
+    @StateObject var viewModel: Specifier.TextField
     @State var contentBinding: String
+    // only used for unit testing purposes
+    var didAppear: ((Self) -> Void)?
     
     internal init(viewModel: Specifier.TextField, searchActive: Bool) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
         self.searchIsActive = searchActive
-        self.contentBinding = viewModel.characteristic.storedContent ?? .empty
+        _contentBinding = State(initialValue: viewModel.characteristic.storedContent)
         self.searchIsActive = searchActive
     }
     
@@ -26,10 +28,8 @@ struct TextFieldSpecifierView: SpecifierSettingsView {
                 
                 Spacer(minLength: Constants.padding)
                 
-                TextField(
-                    viewModel.characteristic.defaultValue ?? .empty,
-                    text: $contentBinding
-                )
+                TextField(viewModel.characteristic.defaultValue,
+                          text: $contentBinding)
                 .accessibilityIdentifier(viewModel.accessibilityIdentifier)
                 .onChange(of: contentBinding) { newValue in
                     if viewModel.characteristic.storedContent != newValue {
@@ -43,14 +43,17 @@ struct TextFieldSpecifierView: SpecifierSettingsView {
                              specifierTitle: viewModel.title,
                              specifierPath: viewModel.specifierPath)
         }
+        .onAppear { didAppear?(self) }
     }
 }
 
 #Preview {
+    let container = MockRepositoryStorable()
     let viewModel: Specifier.TextField =
         .init(title: "Remaining",
               characteristic: .init(key: "user_defaults_textfield_key",
-                                    defaultValue: "some value"))
+                                    defaultValue: "some value",
+                                    container: container))
     
     return Form {
         TextFieldSpecifierView(viewModel: viewModel, searchActive: true)

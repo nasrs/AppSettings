@@ -2,17 +2,18 @@
 
 import SwiftUI
 
-struct ToggleSpecifierView: SpecifierSettingsView {
+struct ToggleSpecifierView: SpecifierSettingsViewing {
     private let searchIsActive: Bool
     var id: UUID { viewModel.id }
-    var viewModel: Specifier.ToggleSwitch
-    
+    @StateObject var viewModel: Specifier.ToggleSwitch
     @State var selected: Bool
+    // only used for unit testing purposes
+    var didAppear: ((Self) -> Void)?
     
     internal init(viewModel: Specifier.ToggleSwitch, searchActive: Bool) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
         self.searchIsActive = searchActive
-        selected = viewModel.characteristic.storedContent
+        _selected =  State(initialValue: viewModel.characteristic.storedContent)
     }
     
     var body: some View {
@@ -38,14 +39,18 @@ struct ToggleSpecifierView: SpecifierSettingsView {
                              specifierTitle: viewModel.title,
                              specifierPath: viewModel.specifierPath)
         }
+        .onAppear { didAppear?(self) }
     }
 }
 
 #Preview {
+    let container = MockRepositoryStorable()
     let viewModel: Specifier.ToggleSwitch =
         .init(title: "Title",
               characteristic: .init(key: "user_defaults_toggle_key",
-                                    defaultValue: true))
+                                    defaultValue: true,
+                                    container: container)
+        )
     
     return Form {
         ToggleSpecifierView(viewModel: viewModel, searchActive: true)

@@ -9,7 +9,15 @@ public protocol SettingEntry: Decodable, Identifiable, Hashable, AnyObject {
     var specifierPath: String { get }
 }
 
-public protocol SettingSearchable: SettingEntry {
+extension SettingEntry {
+    func isEqual<T: SettingEntry>(type: T.Type, a: Any, b: Any) -> Bool {
+        guard let a = a as? T, let b = b as? T else { return false }
+
+        return a == b
+    }
+}
+
+public protocol SettingSearchable: SettingEntry, ObservableObject {
     var specifierKey: String { get }
     var accessibilityIdentifier: String { get }
     func resetSpecifier()
