@@ -87,7 +87,7 @@ final class TextFieldTests: XCTestCase {
         
         let characteristic3 = Specifier.TextField.Characteristic(
             key: "password",
-            defaultValue: nil
+            defaultValue: .empty
         )
         let textField3 = Specifier.TextField(
             title: "Password",
@@ -101,7 +101,7 @@ final class TextFieldTests: XCTestCase {
 
     func testTextFieldHashable() {
         // Given
-        let characteristic = Specifier.TextField.Characteristic(key: "username", defaultValue: nil)
+        let characteristic = Specifier.TextField.Characteristic(key: "username", defaultValue: .empty)
         let textField = Specifier.TextField(title: "Username", characteristic: characteristic)
         
         // When

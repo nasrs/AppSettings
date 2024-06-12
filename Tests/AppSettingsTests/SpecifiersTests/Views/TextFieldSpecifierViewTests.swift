@@ -1,35 +1,97 @@
-//
-//  TextFieldSpecifierViewTests.swift
-//  
-//
-//  Created by Nelson Silvestre on 12/06/2024.
-//
+// Copyright © ICS 2024 from aiPhad.com
 
+@testable import AppSettings
+import Combine
+import ViewInspector
 import XCTest
 
 final class TextFieldSpecifierViewTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
+    var cancellable: AnyCancellable?
+    
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        cancellable?.cancel()
+        cancellable = nil
+        mockEntries.mockStorable.resetResults()
+        try super.tearDownWithError()
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    
+    func test_sut_initializer() {
+        // Given
+        let viewModel = Specifier.TextField(title: "Test Title",
+                                            characteristic: .init(key: "test_key",
+                                                                  defaultValue: "test_default_value"))
+        let searchActive = true
+    
+        // When
+        var sut = TextFieldSpecifierView(viewModel: viewModel, searchActive: searchActive)
+        
+        // Then
+        let expectation = sut.on(\.didAppear) { view in
+            let textView = try XCTUnwrap(view.actualView())
+            
+            XCTAssertEqual(textView.viewModel, viewModel)
+            XCTAssertEqual(textView.id, viewModel.id)
+            XCTAssertEqual(textView.contentBinding, viewModel.characteristic.storedContent)
         }
+        
+        ViewHosting.host(view: sut)
+        
+        wait(for: [expectation], timeout: 1)
     }
 
+    func test_defaultContent_textField() {
+        // Given
+        let viewModel = Specifier.TextField(title: "Test Title",
+                                            characteristic: .init(key: "test_key",
+                                                                  defaultValue: "test_default_value"))
+        let searchActive = true
+        var sut = TextFieldSpecifierView(viewModel: viewModel, searchActive: searchActive)
+        
+        // When
+        let expectation = sut.on(\.didAppear) { view in
+            let textFieldSpecifier = try XCTUnwrap(view.actualView())
+            let textField = try textFieldSpecifier.inspect().find(ViewType.TextField.self)
+            XCTAssertEqual(try textField.accessibilityIdentifier(), viewModel.accessibilityIdentifier)
+            let textFieldContent = try textField.labelView().text().string()
+            
+            // Then
+            XCTAssertEqual(textFieldContent, viewModel.characteristic.defaultValue)
+        }
+        
+        ViewHosting.host(view: sut)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func test_contentBinding_change_shouldPropagateToContainer() {
+        // Given
+        let expectation = expectation(description: "The content received should be the one set on didAppear closure")
+        let viewModel = Specifier.TextField(title: "Test Title",
+                                            characteristic: .init(key: "test_key",
+                                                                  defaultValue: "test_default_value",
+                                                                  container: mockEntries.mockStorable))
+        let searchActive = true
+        var sut = TextFieldSpecifierView(viewModel: viewModel, searchActive: searchActive)
+        
+        cancellable = mockEntries.mockStorable.$results.dropFirst().sink(receiveValue: { received in
+            do {
+                let receivedValue = try XCTUnwrap(received["test_key"] as? String)
+                XCTAssertEqual(receivedValue, "the new content")
+                expectation.fulfill()
+            } catch {
+                XCTFail("failed with error: \(error)")
+            }
+        })
+        
+        // When
+        sut.on(\.didAppear) { view in
+            let textFieldSpecifier = try XCTUnwrap(view.actualView())
+            let textField = try textFieldSpecifier.inspect().find(ViewType.TextField.self)
+            try textField.setInput("the new content")
+        }
+        
+        ViewHosting.host(view: sut)
+        
+        wait(for: [expectation], timeout: 1)
+    }
 }

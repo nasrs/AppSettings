@@ -76,17 +76,17 @@ public extension Specifier.TextField {
         }
         
         @Storable
-        public var storedContent: String? {
+        public var storedContent: String {
             didSet {
                 objectWillChange.send()
             }
         }
         public let key: String
-        public let defaultValue: String?
+        public let defaultValue: String
         public let isSecure: Bool
         public let keyboard: KeyboardType
         
-        internal init(key: String, defaultValue: String?, isSecure: Bool = false, keyboard: KeyboardType = .alphabet, container: RepositoryStorable? = nil) {
+        internal init(key: String, defaultValue: String = .empty, isSecure: Bool = false, keyboard: KeyboardType = .alphabet, container: RepositoryStorable? = nil) {
             self.key = key
             self.defaultValue = defaultValue
             self.isSecure = isSecure

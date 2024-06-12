@@ -32,7 +32,6 @@ final class SliderSpecifierViewTests: XCTestCase {
         
         cancellable = mockEntries.mockStorable.$results.dropFirst().sink(receiveValue: { received in
             do {
-                debugPrint("received: \(received)")
                 let receivedValue = try XCTUnwrap(received[MockEntries.Slider.key] as? Double)
                 XCTAssertEqual(receivedValue, expectedValue, accuracy: 0.0001)
                 expectation.fulfill()
@@ -41,10 +40,12 @@ final class SliderSpecifierViewTests: XCTestCase {
             }
         })
         
-        sliderView.on(\.didAppear) { view in
+        sliderView.on(\.didAppear) { [weak self] view in
+            guard let self else { return }
             let sliderView = try XCTUnwrap(view.actualView())
             let entry = try sliderView.inspect().find(ViewType.Slider.self)
             XCTAssertEqual(sliderView.sliderValue, MockEntries.Slider.defaultValue)
+            XCTAssertEqual(sliderView.id, viewModel.id)
             
             let textString = try sliderView.inspect().find(ViewType.Text.self).string()
             let expected = String(format: "Value: %.01f", MockEntries.Slider.defaultValue)
