@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct ChildPaneSpecifier<Destination: View>: SpecifierSettingsView {
+struct ChildPaneSpecifier<Destination: View>: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.ChildPane
     @ViewBuilder var destination: () -> Destination

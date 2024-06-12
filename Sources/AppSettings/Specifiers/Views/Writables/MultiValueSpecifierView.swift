@@ -2,20 +2,22 @@
 
 import SwiftUI
 
-struct MultiValueSpecifier: SpecifierSettingsView {
+struct MultiValueSpecifierView: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
-    var viewModel: Specifier.MultiValue
+    @StateObject var viewModel: Specifier.MultiValue
+    @State var selected: String = ""
+    // only used for unit testing purposes
+    var didAppear: ((Self) -> Void)?
     
-    @State var selected: String = .empty
     private let searchIsActive: Bool
     
     init(viewModel: Specifier.MultiValue, searchActive: Bool) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
         self.searchIsActive = searchActive
         if let selected = viewModel.characteristic.titleForValue[viewModel.characteristic.storedContent] {
-            self._selected = State<String>(initialValue: selected)
+            _selected = State(initialValue: selected)
         } else if let firstTitle = viewModel.characteristic.titles.first {
-            self._selected = State<String>(initialValue: firstTitle)
+            _selected = State(initialValue: firstTitle)
         }
     }
     
@@ -47,10 +49,12 @@ struct MultiValueSpecifier: SpecifierSettingsView {
                              specifierTitle: viewModel.title,
                              specifierPath: viewModel.specifierPath)
         }
+        .onAppear { self.didAppear?(self) }
     }
 }
 
 #Preview {
+    let container = MockRepositoryStorable()
     let viewModel: Specifier.MultiValue =
         .init(
             title: "Multi Value",
@@ -65,10 +69,11 @@ struct MultiValueSpecifier: SpecifierSettingsView {
                                       "test_1",
                                       "test_2",
                                       "test_3",
-                                  ])
+                                  ],
+                                 container: container)
         )
     
     return Form {
-        MultiValueSpecifier(viewModel: viewModel, searchActive: true)
+        MultiValueSpecifierView(viewModel: viewModel, searchActive: true)
     }
 }
