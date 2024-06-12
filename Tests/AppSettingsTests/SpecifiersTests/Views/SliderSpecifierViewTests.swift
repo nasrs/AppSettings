@@ -74,7 +74,6 @@ final class SliderSpecifierViewTests: XCTestCase {
         
         sliderView.on(\.didAppear) { view in
             let sliderView = try XCTUnwrap(view.actualView())
-            let entry = try sliderView.inspect().find(ViewType.Slider.self)
             XCTAssertEqual(sliderView.sliderValue, localVM.characteristic.defaultValue)
             let text = try sliderView.inspect().find(ViewType.Text.self).string()
             let expected = String(format: "Value: %.01f", 32.0)
