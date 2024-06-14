@@ -135,4 +135,72 @@ class RadioTests: XCTestCase {
         XCTAssertEqual(specifier1, specifier2)
         XCTAssertNotEqual(specifier1, specifier3)
     }
+    
+    func test_shouldReset_whenTrue_shouldPreventStoredContentToResetForDefault() throws {
+        // Given
+        let radioData =  """
+        {
+            "Key": "radio_key",
+            "Title": "Radio Title",
+            "FooterText": "Footer Text",
+            "Titles": ["value A", "value B"],
+            "Values": ["val1", "val2"],
+            "DefaultValue": "val2",
+            "Restartable": false
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(radioData)
+        let decoded = try decoder.decode(Specifier.Radio.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "radio_key")
+        XCTAssertEqual(decoded.title, "Radio Title")
+        XCTAssertEqual(decoded.characteristic.defaultValue, "val2")
+        XCTAssertEqual(decoded.shouldReset, false)
+        
+        decoded.characteristic.storedContent = "val1"
+        XCTAssertEqual(decoded.characteristic.storedContent, "val1")
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, "val1")
+    }
+
+    func test_shouldReset_whenFalse_shouldResetStoredContentForDefault() throws {
+        // Given
+        let radioData =  """
+        {
+            "Key": "radio_key",
+            "Title": "Radio Title",
+            "FooterText": "Footer Text",
+            "Titles": ["value A", "value B"],
+            "Values": ["val1", "val2"],
+            "DefaultValue": "val2",
+            "Restartable": true
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(radioData)
+        let decoded = try decoder.decode(Specifier.Radio.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "radio_key")
+        XCTAssertEqual(decoded.title, "Radio Title")
+        XCTAssertEqual(decoded.characteristic.defaultValue, "val2")
+        XCTAssertEqual(decoded.shouldReset, true)
+        
+        decoded.characteristic.storedContent = "val1"
+        XCTAssertEqual(decoded.characteristic.storedContent, "val1")
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, decoded.characteristic.defaultValue)
+    }
 }

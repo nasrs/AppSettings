@@ -110,4 +110,74 @@ final class TextFieldTests: XCTestCase {
         // Then
         XCTAssertNotNil(hashValue)
     }
+    
+    func test_shouldReset_whenTrue_shouldPreventStoredContentToResetForDefault() throws {
+        // Given
+        let textFieldData =  """
+        {
+            "Title": "TextField Title",
+            "Key": "text_field_key",
+            "DefaultValue": "placeholder text",
+            "KeyboardType": "Alphabet",
+            "IsSecure": false,
+            "Restartable": false
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(textFieldData)
+        let decoded = try decoder.decode(Specifier.TextField.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "text_field_key")
+        XCTAssertEqual(decoded.title, "TextField Title")
+        XCTAssertEqual(decoded.characteristic.defaultValue, "placeholder text")
+        XCTAssertEqual(decoded.characteristic.keyboard, .alphabet)
+        XCTAssertEqual(decoded.characteristic.isSecure, false)
+        XCTAssertEqual(decoded.shouldReset, false)
+        
+        decoded.characteristic.storedContent = "this the next text stored"
+        XCTAssertEqual(decoded.characteristic.storedContent, "this the next text stored")
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, "this the next text stored")
+    }
+
+    func test_shouldReset_whenFalse_shouldResetStoredContentForDefault() throws {
+        // Given
+        let textFieldData =  """
+        {
+            "Title": "TextField Title",
+            "Key": "text_field_key",
+            "DefaultValue": "placeholder text",
+            "KeyboardType": "EmailAddress",
+            "IsSecure": false,
+            "Restartable": true
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(textFieldData)
+        let decoded = try decoder.decode(Specifier.TextField.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "text_field_key")
+        XCTAssertEqual(decoded.title, "TextField Title")
+        XCTAssertEqual(decoded.characteristic.defaultValue, "placeholder text")
+        XCTAssertEqual(decoded.characteristic.keyboard, .email)
+        XCTAssertEqual(decoded.characteristic.isSecure, false)
+        XCTAssertEqual(decoded.shouldReset, true)
+        
+        decoded.characteristic.storedContent = "this the next text stored"
+        XCTAssertEqual(decoded.characteristic.storedContent, "this the next text stored")
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, "placeholder text")
+    }
 }

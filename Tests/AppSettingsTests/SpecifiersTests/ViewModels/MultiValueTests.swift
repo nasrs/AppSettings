@@ -104,4 +104,70 @@ final class MultiValueTests: XCTestCase {
         XCTAssertEqual(specifier1, specifier2)
         XCTAssertNotEqual(specifier1, specifier3)
     }
+    
+    func test_shouldReset_whenTrue_shouldPreventStoredContentToResetForDefault() throws {
+        // Given
+        let multiValueData = """
+        {
+            "Key": "some_multivalue_key",
+            "Title": "Multi Value Title",
+            "Titles": ["value A", "value B"],
+            "Values": ["val1", "val2"],
+            "DefaultValue": "val1",
+            "Restartable": false
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(multiValueData)
+        let decoded = try decoder.decode(Specifier.MultiValue.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "some_multivalue_key")
+        XCTAssertEqual(decoded.title, "Multi Value Title")
+        XCTAssertEqual(decoded.characteristic.defaultValue, "val1")
+        XCTAssertEqual(decoded.shouldReset, false)
+        
+        decoded.characteristic.storedContent = "val2"
+        XCTAssertEqual(decoded.characteristic.storedContent, "val2")
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, "val2")
+    }
+    
+    func test_shouldReset_whenFalse_shouldResetStoredContentForDefault() throws {
+        // Given
+        let multiValueData = """
+        {
+            "Key": "some_multivalue_key",
+            "Title": "Multi Value Title",
+            "Titles": ["value A", "value B"],
+            "Values": ["val1", "val2"],
+            "DefaultValue": "val1",
+            "Restartable": true
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(multiValueData)
+        let decoded = try decoder.decode(Specifier.MultiValue.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "some_multivalue_key")
+        XCTAssertEqual(decoded.title, "Multi Value Title")
+        XCTAssertEqual(decoded.characteristic.defaultValue, "val1")
+        XCTAssertEqual(decoded.shouldReset, true)
+        
+        decoded.characteristic.storedContent = "val2"
+        XCTAssertEqual(decoded.characteristic.storedContent, "val2")
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, decoded.characteristic.defaultValue)
+    }
 }

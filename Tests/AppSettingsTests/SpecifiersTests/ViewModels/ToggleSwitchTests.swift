@@ -106,4 +106,66 @@ final class ToggleSwitchTests: XCTestCase {
         
         XCTAssertEqual(toggleSwitch1.hashValue, toggleSwitch2.hashValue)
     }
+    
+    func test_shouldReset_whenTrue_shouldPreventStoredContentToResetForDefault() throws {
+        // Given
+        let toggleSwitchData =  """
+        {
+            "Title": "Toggle Switch Title",
+            "Key": "toggle_switch_key",
+            "DefaultValue": true,
+            "Restartable": false
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(toggleSwitchData)
+        let decoded = try decoder.decode(Specifier.ToggleSwitch.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "toggle_switch_key")
+        XCTAssertEqual(decoded.title, "Toggle Switch Title")
+        XCTAssertEqual(decoded.characteristic.defaultValue, true)
+        XCTAssertEqual(decoded.shouldReset, false)
+        
+        decoded.characteristic.storedContent = false
+        XCTAssertEqual(decoded.characteristic.storedContent, false)
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, false)
+    }
+
+    func test_shouldReset_whenFalse_shouldResetStoredContentForDefault() throws {
+        // Given
+        let toggleSwitchData =  """
+        {
+            "Title": "Toggle Switch Title",
+            "Key": "toggle_switch_key",
+            "DefaultValue": true,
+            "Restartable": true
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(toggleSwitchData)
+        let decoded = try decoder.decode(Specifier.ToggleSwitch.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "toggle_switch_key")
+        XCTAssertEqual(decoded.title, "Toggle Switch Title")
+        XCTAssertEqual(decoded.characteristic.defaultValue, true)
+        XCTAssertEqual(decoded.shouldReset, true)
+        
+        decoded.characteristic.storedContent = false
+        XCTAssertEqual(decoded.characteristic.storedContent, false)
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, true)
+    }
 }
