@@ -14,6 +14,8 @@ extension Specifier {
             characteristic.key
         }
         
+        private(set) var shouldReset: Bool = true
+        
         internal init(id: UUID = .init(), title: String, characteristic: TextField.Characteristic) {
             self.id = id
             self.title = title
@@ -33,6 +35,7 @@ extension Specifier {
             let isSecure = try container.decodeIfPresent(Bool.self, forKey: .isSecure) ?? false
             
             accessibilityIdentifier = "\(specifierKey)_textfield"
+            shouldReset = try container.decodeIfPresent(Bool.self, forKey: .restartable) ?? true
             
             if let container = decoder.userInfo[Specifier.repository] as? RepositoryStorable {
                 characteristic = .init(key: specifierKey,
@@ -46,6 +49,7 @@ extension Specifier {
         }
         
         public func resetSpecifier() {
+            guard shouldReset else { return }
             characteristic.storedContent = characteristic.defaultValue
         }
         
@@ -55,6 +59,7 @@ extension Specifier {
             case defaultValue = "DefaultValue"
             case keyboard = "KeyboardType"
             case isSecure = "IsSecure"
+            case restartable = "Restartable"
         }
     }
 }
