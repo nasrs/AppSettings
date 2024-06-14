@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-public struct SettingsEntryView: SpecifierSettingsView {
+public struct SettingsEntryView: SpecifierSettingsViewing {
     public var id: UUID { viewModel.id }
     public var viewModel: any SettingEntry
     private var searchIsActive: Bool
@@ -25,7 +25,7 @@ public struct SettingsEntryView: SpecifierSettingsView {
             GroupSpecifier(viewModel: viewModel, searchIsActive: searchIsActive)
         case .multiValue:
             let viewModel = viewModel as! Specifier.MultiValue
-            MultiValueSpecifier(viewModel: viewModel, searchActive: searchIsActive)
+            MultiValueSpecifierView(viewModel: viewModel, searchActive: searchIsActive)
         case .textField:
             let viewModel = viewModel as! Specifier.TextField
             TextFieldSpecifierView(viewModel: viewModel, searchActive: searchIsActive)

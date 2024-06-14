@@ -10,3 +10,29 @@ public protocol RepositoryStorable: AnyObject {
 }
 
 extension UserDefaults: RepositoryStorable {}
+
+#if DEBUG
+class MockRepositoryStorable: RepositoryStorable, ObservableObject {
+    @Published var results: [String: Any] = [:]
+    
+    func object(forKey defaultName: String) -> Any? {
+        return results[defaultName]
+    }
+    
+    func removeObject(forKey defaultName: String) {
+        results.removeValue(forKey: defaultName)
+    }
+    
+    func set(_ value: Any?, forKey defaultName: String) {
+        results[defaultName] = value
+    }
+    
+    func register(defaults registrationDictionary: [String : Any]) {
+        results = registrationDictionary
+    }
+    
+    func resetResults() {
+        results.removeAll()
+    }
+}
+#endif

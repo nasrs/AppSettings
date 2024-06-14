@@ -7,7 +7,7 @@ extension Specifier {
         public var id: UUID = .init()
         public let type: Kind = .toggleSwitch
         public let title: String
-        public let characteristic: Characteristic
+        @Published public internal(set) var characteristic: Characteristic
         public let accessibilityIdentifier: String
         public internal(set) var specifierPath: String = ""
         public var specifierKey: String {
@@ -59,10 +59,14 @@ extension Specifier.ToggleSwitch: PathIdentifier {}
 // MARK: CharacteristicStorable
 
 public extension Specifier.ToggleSwitch {
-    class Characteristic: CharacteristicStorable {
+    class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
-        public var storedContent: Bool
+        public var storedContent: Bool {
+            didSet {
+                objectWillChange.send()
+            }
+        }
         public let key: String
         public let defaultValue: Bool
         
@@ -71,6 +75,10 @@ public extension Specifier.ToggleSwitch {
             self.defaultValue = defaultValue
             _storedContent = .init(key: key, defaultValue: defaultValue, container: container)
         }
+        
+        public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+            lhs.key == rhs.key && lhs.defaultValue == rhs.defaultValue
+        }
     }
 }
 
@@ -78,7 +86,9 @@ public extension Specifier.ToggleSwitch {
 
 extension Specifier.ToggleSwitch {
     public static func == (lhs: Specifier.ToggleSwitch, rhs: Specifier.ToggleSwitch) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {

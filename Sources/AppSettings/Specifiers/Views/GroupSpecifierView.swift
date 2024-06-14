@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct GroupSpecifier: SpecifierSettingsView {
+struct GroupSpecifier: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.Group
     var searchIsActive: Bool

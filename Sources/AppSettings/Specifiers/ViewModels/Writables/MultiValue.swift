@@ -4,10 +4,10 @@ import Foundation
 
 extension Specifier {
     public class MultiValue: SettingSearchable {
+        @Published public internal(set) var characteristic: Characteristic
         public var id: UUID = .init()
         public let type: Kind = .multiValue
         public let title: String
-        public let characteristic: Characteristic
         public let accessibilityIdentifier: String
         public internal(set) var specifierPath: String = ""
         public var specifierKey: String {
@@ -72,12 +72,16 @@ extension Specifier.MultiValue: PathIdentifier {}
 // MARK: CharacteristicStorable
 
 public extension Specifier.MultiValue {
-    class Characteristic: CharacteristicStorable {
+    class Characteristic: CharacteristicStorable, Equatable {
         
         @Storable
-        public var storedContent: String
+        public var storedContent: String {
+            didSet {
+                objectWillChange.send()
+            }
+        }
         public let key: String
-        public var defaultValue: String
+        public let defaultValue: String
         public let titles: [String]
         public let values: [String]
         public let valueForTitle: [String: String]
@@ -92,6 +96,13 @@ public extension Specifier.MultiValue {
             self.titleForValue = Dictionary(uniqueKeysWithValues: zip(values, titles))
             _storedContent = .init(key: key, defaultValue: defaultValue, container: container)
         }
+        
+        public static func == (lhs: Characteristic, rhs: Characteristic) -> Bool {
+            lhs.key == rhs.key &&
+            lhs.defaultValue == rhs.defaultValue &&
+            lhs.titles == rhs.titles &&
+            lhs.values == rhs.values
+        }
     }
 }
 
@@ -99,7 +110,9 @@ public extension Specifier.MultiValue {
 
 extension Specifier.MultiValue {
     public static func == (lhs: Specifier.MultiValue, rhs: Specifier.MultiValue) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.characteristic == rhs.characteristic
     }
     
     public func hash(into hasher: inout Hasher) {

@@ -6,6 +6,7 @@ struct SearchingKeyView: View {
     var searchIsActive: Bool
     var specifierKey: String
     var specifierTitle: String
+    var specifierFooter: String?
     var specifierPath: String?
     private var shouldShowKey: Bool {
         !specifierKey.isEmpty && specifierKey != specifierTitle
@@ -29,7 +30,11 @@ struct SearchingKeyView: View {
             .padding(3)
             .border(Color(.systemGray).opacity(0.3), width: 1.0)
         } else {
-            EmptyView()
+            if let specifierFooter {
+                Text(specifierFooter)
+            } else {
+                EmptyView()
+            }
         }
     }
 }
@@ -40,9 +45,10 @@ struct SearchingKeyView: View {
     return Form {
         VStack(alignment: .leading) {
             Text(specifierTitle)
-            SearchingKeyView(searchIsActive: true,
+            SearchingKeyView(searchIsActive: false,
                              specifierKey: "something_test",
                              specifierTitle: specifierTitle,
+                             specifierFooter: "specifier footer",
                              specifierPath: "test → something → other")
         }
     }

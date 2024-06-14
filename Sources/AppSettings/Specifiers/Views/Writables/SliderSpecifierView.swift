@@ -2,31 +2,33 @@
 
 import SwiftUI
 
-struct SliderSpecifierView: SpecifierSettingsView {
+struct SliderSpecifierView: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
-    var viewModel: Specifier.Slider
+    
+    @StateObject var viewModel: Specifier.Slider
+    @State var sliderValue: Double = 0.0
     
     private var searchIsActive: Bool
     let minValue: Double
     let maxValue: Double
-    
-    @State var value: Double
+    // only used for unit testing purposes
+    var didAppear: ((Self) -> Void)?
     
     init(viewModel: Specifier.Slider, searchActive: Bool) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
         self.searchIsActive = searchActive
-        _value = State<Double>(initialValue: viewModel.characteristic.storedContent)
         minValue = viewModel.characteristic.minValue
         maxValue = viewModel.characteristic.maxValue
+        _sliderValue = State(initialValue: viewModel.characteristic.storedContent)
     }
     
     var body: some View {
         VStack {
-            Slider(value: $value, in: minValue ... maxValue)
+            Slider(value: $sliderValue, in: minValue ... maxValue)
                 .accessibilityIdentifier(viewModel.accessibilityIdentifier)
             
             HStack {
-                Text("Value: \(value, specifier: "%.1f")")
+                Text("Value: \(sliderValue, specifier: "%.1f")")
                 Spacer()
             }
             
@@ -35,20 +37,23 @@ struct SliderSpecifierView: SpecifierSettingsView {
                              specifierTitle: viewModel.title,
                              specifierPath: viewModel.specifierPath)
         }
-        .onChange(of: value) { newValue in
+        .onChange(of: sliderValue) { newValue in
             if viewModel.characteristic.storedContent != newValue {
                 viewModel.characteristic.storedContent = newValue
             }
         }
+        .onAppear { didAppear?(self) }
     }
 }
 
 #Preview {
+    let container = MockRepositoryStorable()
     let viewModel: Specifier.Slider = .init(characteristic:
         .init(key: "key_string",
-              defaultValue: 5,
-              minValue: 1,
-              maxValue: 32)
+              defaultValue: 17.0,
+              minValue: 6,
+              maxValue: 56,
+             container: container)
     )
     
     return Form(content: {
