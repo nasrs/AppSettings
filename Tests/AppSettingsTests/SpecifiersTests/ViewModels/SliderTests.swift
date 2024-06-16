@@ -82,4 +82,66 @@ final class SliderTests: XCTestCase {
         XCTAssertEqual(specifier1, specifier2)
         XCTAssertNotEqual(specifier1, specifier3)
     }
+    
+    func test_shouldReset_whenTrue_shouldPreventStoredContentToResetForDefault() throws {
+        // Given
+        let sliderData =  """
+        {
+            "Key": "slider_key",
+            "DefaultValue": 3.2,
+            "MinimumValue": 1.3,
+            "MaximumValue": 5.6,
+            "Restartable": false
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(sliderData)
+        let decoded = try decoder.decode(Specifier.Slider.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "slider_key")
+        XCTAssertEqual(decoded.characteristic.defaultValue, 3.2)
+        XCTAssertEqual(decoded.shouldReset, false)
+        
+        decoded.characteristic.storedContent = 4.6
+        XCTAssertEqual(decoded.characteristic.storedContent, 4.6)
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, 4.6)
+    }
+
+    func test_shouldReset_whenFalse_shouldResetStoredContentForDefault() throws {
+        // Given
+        let sliderData =  """
+        {
+            "Key": "slider_key",
+            "DefaultValue": 3.2,
+            "MinimumValue": 1.3,
+            "MaximumValue": 5.6,
+            "Restartable": true
+        }
+        """.data(using: .utf8)
+        
+        let decoder = JSONDecoder()
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        let data = try XCTUnwrap(sliderData)
+        let decoded = try decoder.decode(Specifier.Slider.self, from: data)
+        
+        XCTAssertEqual(decoded.specifierKey, "slider_key")
+        XCTAssertEqual(decoded.characteristic.defaultValue, 3.2)
+        XCTAssertEqual(decoded.shouldReset, true)
+        
+        decoded.characteristic.storedContent = 2.6
+        XCTAssertEqual(decoded.characteristic.storedContent, 2.6)
+        
+        // When
+        decoded.resetSpecifier()
+        
+        // Then
+        XCTAssertEqual(decoded.characteristic.storedContent, decoded.characteristic.defaultValue)
+    }
 }

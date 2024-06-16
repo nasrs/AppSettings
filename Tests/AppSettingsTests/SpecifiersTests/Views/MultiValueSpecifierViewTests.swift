@@ -135,35 +135,4 @@ final class MultiValueSpecifierViewTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1)
     }
-        
-//    func testPickerSelectionNoChange() {
-//        let multiValue = MultiValueSpecifierView(viewModel: viewModel, searchActive: true)
-//
-    ////        XCTAssertEqual(multiValue.viewModel.characteristic.storedContent, "option_2")
-//
-    ////        cancellable = mockEntries.mockStorable.$results.dropFirst().sink(receiveValue: { received in
-    ////            do {
-    ////                let receivedValue = try XCTUnwrap(received[MockEntries.MultiValue.key] as? String)
-    ////                XCTAssertEqual(receivedValue, "option_1")
-    ////                expectation.fulfill()
-    ////            } catch {
-    ////                XCTFail("failed with error: \(error)")
-    ////            }
-    ////        })
-//
-//        multiValue.on(\.didAppear) { view in
-//            let specifier = try view.actualView()
-//            multiValue.selected = "Option 2"
-//        }
-//
-//        ViewHosting.host(view: multiValue)
-//    }
-//
-//    func testSearchingKeyView() {
-//        let view = MultiValueSpecifierView(viewModel: viewModel, searchActive: true)
-//
-    ////        let searchingKeyView = view.body.viewWithTag(1)
-    ////
-    ////        XCTAssertNotNil(searchingKeyView)
-//    }
 }
