@@ -11,7 +11,9 @@ struct SearchingKeyView: View {
     private var shouldShowKey: Bool {
         !specifierKey.isEmpty && specifierKey != specifierTitle
     }
-    
+    // only valid for unit testing purposes
+    var didAppear: ((Self) -> Void)?
+        
     var body: some View {
         if searchIsActive {
             VStack(alignment: .leading, spacing: 2, content: {
@@ -29,11 +31,15 @@ struct SearchingKeyView: View {
             })
             .padding(3)
             .border(Color(.systemGray).opacity(0.3), width: 1.0)
+            .onAppear { didAppear?(self) }
         } else {
-            if let specifierFooter {
+            if let specifierFooter,
+               !specifierFooter.isEmpty {
                 Text(specifierFooter)
+                    .onAppear { didAppear?(self) }
             } else {
                 EmptyView()
+                    .onAppear { didAppear?(self) }
             }
         }
     }
