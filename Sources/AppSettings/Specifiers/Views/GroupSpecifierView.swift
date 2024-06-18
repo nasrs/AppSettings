@@ -6,6 +6,8 @@ struct GroupSpecifierView: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.Group
     var searchIsActive: Bool
+    // only valid for unit testing purposes
+    var didAppear: ((Self) -> Void)?
     
     var body: some View {
         Section {
@@ -17,6 +19,7 @@ struct GroupSpecifierView: SpecifierSettingsViewing {
         } footer: {
             TextOrEmptyView(text: viewModel.footerText)
         }
+        .onAppear { didAppear?(self) }
     }
 }
 
