@@ -6,6 +6,8 @@ struct ChildPaneSpecifier<Destination: View>: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.ChildPane
     @ViewBuilder var destination: () -> Destination
+    // only used for unit testing purposes
+    var didAppear: ((Self) -> Void)?
     
     var body: some View {
         NavigationLink {
@@ -14,6 +16,7 @@ struct ChildPaneSpecifier<Destination: View>: SpecifierSettingsViewing {
             TextOrEmptyView(text: viewModel.title)
         }
         .accessibilityIdentifier(viewModel.accessibilityIdentifier)
+        .onAppear { didAppear?(self) }
     }
 }
 
