@@ -16,13 +16,13 @@ public struct SettingsEntryView: SpecifierSettingsViewing {
         switch viewModel.type {
         case .childPane:
             let viewModel = viewModel as! Specifier.ChildPane
-            ChildPaneSpecifier(viewModel: viewModel) {
+            ChildPaneSpecifierView(viewModel: viewModel) {
                 InnerSettingsListView(entries: viewModel.characteristic.entries, 
                                       title: viewModel.title)
             }
         case .group:
             let viewModel = viewModel as! Specifier.Group
-            GroupSpecifier(viewModel: viewModel, searchIsActive: searchIsActive)
+            GroupSpecifierView(viewModel: viewModel, searchIsActive: searchIsActive)
         case .multiValue:
             let viewModel = viewModel as! Specifier.MultiValue
             MultiValueSpecifierView(viewModel: viewModel, searchActive: searchIsActive)

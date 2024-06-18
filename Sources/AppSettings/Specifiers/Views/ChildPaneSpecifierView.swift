@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct ChildPaneSpecifier<Destination: View>: SpecifierSettingsViewing {
+struct ChildPaneSpecifierView<Destination: View>: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.ChildPane
     @ViewBuilder var destination: () -> Destination
@@ -25,7 +25,7 @@ struct ChildPaneSpecifier<Destination: View>: SpecifierSettingsViewing {
                                         characteristic: .init(fileName: "blahblahblah"))
     
     return Form(content: {
-        ChildPaneSpecifier(viewModel: viewModel) {
+        ChildPaneSpecifierView(viewModel: viewModel) {
             Text("you'll land here")
         }
     })

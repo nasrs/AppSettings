@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct GroupSpecifier: SpecifierSettingsViewing {
+struct GroupSpecifierView: SpecifierSettingsViewing {
     var id: UUID { viewModel.id }
     var viewModel: Specifier.Group
     var searchIsActive: Bool
@@ -39,6 +39,6 @@ struct GroupSpecifier: SpecifierSettingsViewing {
     )
     
     return Form(content: {
-        GroupSpecifier(viewModel: viewModel, searchIsActive: true)
+        GroupSpecifierView(viewModel: viewModel, searchIsActive: true)
     })
 }

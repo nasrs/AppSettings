@@ -7,7 +7,7 @@ import XCTest
 import SwiftUI
 
 final class ChildPaneSpecifierViewTests: XCTestCase {
-    var sut: ChildPaneSpecifier<EmptyView>!
+    var sut: ChildPaneSpecifierView<EmptyView>!
     var viewModel: Specifier.ChildPane!
     
     override func setUpWithError() throws {
@@ -16,7 +16,7 @@ final class ChildPaneSpecifierViewTests: XCTestCase {
             mockEntries.toggleSwitch
         ])
         
-        sut = ChildPaneSpecifier(viewModel: viewModel) {
+        sut = ChildPaneSpecifierView(viewModel: viewModel) {
             EmptyView()
         }
     }
