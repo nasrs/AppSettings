@@ -3,16 +3,14 @@
 import SwiftUI
 
 struct InnerSettingsListView: View {
-    @StateObject private var viewModel: SearchViewModel
+    @EnvironmentObject private var searchable: SearchableEntries
+    @ObservedObject private var viewModel: SearchViewModel
     @State private var reseting: Bool = false
     private let title: String
     
     init(entries: [any SettingEntry], title: String) {
         self.title = title
-        
-        _viewModel = StateObject(
-            wrappedValue: SearchViewModel(entries)
-        )
+        viewModel = SearchViewModel(entries: entries)
     }
     
     var body: some View {
@@ -21,6 +19,9 @@ struct InnerSettingsListView: View {
             .navigationTitle(title)
             .searchable(text: $viewModel.searchText,
                         prompt: "Insert title or key")
+            .onAppear(perform: {
+                viewModel.searchable = searchable
+            })
     }
     
     @ViewBuilder

@@ -31,7 +31,11 @@ final class SearchViewModelTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        cancellable?.cancel()
+        cancellable = nil
+        entries = nil
         sut = nil
+        mockEntries.mockStorable.resetResults()
         try super.tearDownWithError()
     }
     
