@@ -3,6 +3,14 @@
 import Combine
 import Foundation
 
+final class SearchableEntries: ObservableObject {
+    private(set) var entries: [any SettingSearchable]
+    
+    init(_ searchable: [any SettingSearchable]) {
+        self.entries = searchable
+    }
+}
+
 final class SearchViewModel: ObservableObject {
     @Published var visibleEntries: [any SettingEntry] = []
     @Published var searchText: String = ""
@@ -13,12 +21,11 @@ final class SearchViewModel: ObservableObject {
     
     private let entries: [any SettingEntry]
     private var cancellables = Set<AnyCancellable>()
-    private var findableEntries: [any SettingSearchable] {
-        SettingsBundleReader.shared?.searchable ?? []
-    }
+    var searchable: SearchableEntries
     
-    init(_ entries: [any SettingEntry]) {
+    init(entries: [any SettingEntry], findable: [any SettingSearchable] = []) {
         self.entries = entries
+        self.searchable = .init(findable)
         performSmartFilter()
         setupBindings()
     }
@@ -36,33 +43,31 @@ final class SearchViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    private func performSmartFilter() {
+        guard !searchText.isEmpty || searchText.count > 3 else {
+            visibleEntries = entries
+            return
+        }
+        
+        guard let regexObject = NSRegularExpression(searchText.lowercased()) else {
+            return
+        }
+        
+        var filteredEntries: [any SettingEntry]
+        
+        filteredEntries = searchable.entries.filter {
+            regexObject.matchPattern($0.title.lowercased()) ||
+            regexObject.matchPattern($0.specifierKey.lowercased())
+        }
+        
+        visibleEntries = filteredEntries
+    }
+    
     @MainActor
     func resetUserDefaults() async {
         visibleEntries = []
         await SettingsBundleReader.shared?.resetDefaults()
         searchText = .empty
         performSmartFilter()
-    }
-    
-    private func performSmartFilter() {
-        guard !searchText.isEmpty || searchText.count > 3 else {
-            visibleEntries = entries
-            return
-        }
-        var filteredEntries: [any SettingEntry]
-        
-        if let regexObject = NSRegularExpression(searchText.lowercased()) {
-            filteredEntries = findableEntries.filter {
-                regexObject.matchPattern($0.title.lowercased()) ||
-                    regexObject.matchPattern($0.specifierKey.lowercased())
-            }
-        } else {
-            filteredEntries = findableEntries.filter {
-                $0.title.localizedStandardContains(searchText) ||
-                    $0.specifierKey.localizedStandardContains(searchText)
-            }
-        }
-        
-        visibleEntries = filteredEntries
     }
 }
