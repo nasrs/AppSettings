@@ -6,7 +6,7 @@ import SwiftUI
 import ViewInspector
 import XCTest
 
-final class SearchViewModelTests: XCTestCase {
+final class SettingsRendererViewModelTests: XCTestCase {
     var sut: SettingsRendererView.ViewModel!
     var cancellable: AnyCancellable?
     
