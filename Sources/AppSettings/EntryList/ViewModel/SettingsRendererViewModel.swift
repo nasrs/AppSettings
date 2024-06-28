@@ -4,24 +4,20 @@ import Combine
 import Foundation
 
 extension SettingsRendererView {
-    final class ViewModel: ObservableObject {
+    final class ViewModel: ObservableObject, SmartSearching {
         @Published var visibleEntries: [any SettingEntry] = []
         @Published var searchText: String = ""
-        
-        var isSearching: Bool {
-            searchText.isEmpty == false && searchText.count > 3
-        }
         
         private var cancellable: AnyCancellable?
         private(set) var reader: (any SettingsBundleReading)?
         private(set) var searchable: SearchableEntries
-        private var entries: [any SettingEntry]
+        private(set) var entries: [any SettingEntry]
         
         init(_ reader: any SettingsBundleReading) {
             self.reader = reader
-            self.searchable = .init(reader.findable)
-            self.entries = reader.entries
-            self.defaultSetup()
+            searchable = .init(reader.findable)
+            entries = reader.entries
+            defaultSetup()
         }
         
         private func defaultSetup() {
@@ -42,26 +38,6 @@ extension SettingsRendererView {
                 })
         }
         
-        private func performSmartFilter() {
-            guard !searchText.isEmpty || searchText.count > 3 else {
-                visibleEntries = entries
-                return
-            }
-            
-            guard let regexObject = NSRegularExpression(searchText.lowercased()) else {
-                return
-            }
-            
-            var filteredEntries: [any SettingEntry]
-            
-            filteredEntries = searchable.entries.filter {
-                regexObject.matchPattern($0.title.lowercased()) ||
-                regexObject.matchPattern($0.specifierKey.lowercased())
-            }
-            
-            visibleEntries = filteredEntries
-        }
-        
         @MainActor
         func resetUserDefaults() async {
             visibleEntries = []
@@ -69,7 +45,5 @@ extension SettingsRendererView {
             searchText = .empty
             performSmartFilter()
         }
-
     }
 }
-
