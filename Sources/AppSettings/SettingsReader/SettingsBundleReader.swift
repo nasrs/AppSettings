@@ -3,48 +3,51 @@
 import Foundation
 
 public protocol SettingsBundleReading {
-    var settingsUnwrapped: [any SettingEntry] { get }
+    var entries: [any SettingEntry] { get }
+    var findable: [any SettingSearchable] { get }
+    func resetDefaults() async
 }
 
 public struct SettingsBundleReader: SettingsBundleReading {
-    private enum Constants {
-        static let preferences = "PreferenceSpecifiers"
-        static let plistFile = "plist"
-        static func bundleFile(_ fileName: String) -> String {
-            "\(fileName).bundle"
-        }
-    }
     
-    public var settingsUnwrapped: [any SettingEntry] = []
+    // MARK: Public
+    public var entries: [any SettingEntry] = []
+    public var findable: [any SettingSearchable] = []
+    
+    // MARK: Internal
+    var repository: RepositoryStorable
+    static var shared: SettingsBundleReading?
+    
+    // MARK: Private
     private var rootFileName: String
     private var bundleFileName: String
-    internal var repository: RepositoryStorable
-    internal var searchable: [any SettingSearchable] = []
-    internal static let didResetSettings: NSNotification.Name = .init("settings.bundle.reader.reset")
     
-    public static var shared: SettingsBundleReader?
-    
-    /// After initialised a list of all the Settings.bundle and corresponding relationships
-    /// After initialised shared will strong retain the reference of SettingsBundleReader (session singleton)
+    /// Setup is responsible for launch the unwrap of all objects and the corresponding relationships
     /// - Parameters:
     ///   - userDefaults: by default "UserDefaults.standard" also possible to inject some object compliant with RepositoryStorable
     ///   - rootFileName: name of the "root" plist file on the bundle. Default is "Root"
     ///   - bundleFileName: "Settings.bundle" name of the main *.*bundle folder. Default Settings.bundle
+    public static func setup(repository: RepositoryStorable = UserDefaults.standard,
+                             rootFileName: String = "Root",
+                             bundleFileName: String = "Settings") {
+        guard Self.shared == nil else { return }
+        SettingsBundleReader(repository: repository,
+                             rootFileName: rootFileName,
+                             bundleFileName: bundleFileName)
+    }
+    
     @discardableResult
-    public init?(repository: RepositoryStorable = UserDefaults.standard,
-                 rootFileName: String = "Root",
-                 bundleFileName: String = "Settings") {
-        guard Self.shared == nil else {
-            return nil
-        }
+    init?(repository: RepositoryStorable,
+          rootFileName: String,
+          bundleFileName: String) {
         self.repository = repository
         self.rootFileName = rootFileName
         self.bundleFileName = bundleFileName
         
         if let settingsAvailable = unwrapSpecifiers(fileName: rootFileName,
                                                     parent: nil) {
-            settingsUnwrapped = settingsAvailable
-            searchable = parseSearchables(settings: settingsAvailable)
+            entries = settingsAvailable
+            findable = parseSearchables(settings: settingsAvailable)
             Self.shared = self
         } else {
             preconditionFailure("unable to unwrap results from file \(rootFileName). Please review any error on file.\nConsole output may contain useful information about the problem on file.")
@@ -52,16 +55,16 @@ public struct SettingsBundleReader: SettingsBundleReading {
         }
     }
     
-    func resetDefaults() async {
+    public func resetDefaults() async {
         Task {
-            searchable.forEach {
+            findable.forEach {
                 $0.resetSpecifier()
             }
         }
     }
 }
 
-// MARK: SettingsBundleReader Private
+// MARK: Unwrapping creating relationships between objects
 extension SettingsBundleReader {
     
     /// Intent to put in just 1 place the parsing of the objects able to be searched
@@ -215,5 +218,17 @@ extension SettingsBundleReader {
         }
         
         return toReturn
+    }
+}
+
+extension SettingsBundleReader {
+    
+    // MARK: Constants
+    private enum Constants {
+        static let preferences = "PreferenceSpecifiers"
+        static let plistFile = "plist"
+        static func bundleFile(_ fileName: String) -> String {
+            "\(fileName).bundle"
+        }
     }
 }

@@ -42,19 +42,19 @@ class RadioTests: XCTestCase {
     func test_storedContent_updatesStorable() throws {
         sut.characteristic.storedContent = sut.characteristic.defaultValue
         let specifierKey = try XCTUnwrap(sut.characteristic.key)
-        let defaultValueStored = mockEntries.mockStorable.object(forKey: specifierKey) as? String
+        let defaultValueStored = mockEntries.storable.object(forKey: specifierKey) as? String
         XCTAssertEqual(defaultValueStored, sut.characteristic.defaultValue)
         
         let valueToStore = try XCTUnwrap(sut.characteristic.values.last)
         sut.characteristic.storedContent = valueToStore
         
-        let valueExpected = try XCTUnwrap(mockEntries.mockStorable.object(forKey: specifierKey) as? String)
+        let valueExpected = try XCTUnwrap(mockEntries.storable.object(forKey: specifierKey) as? String)
         XCTAssertEqual(valueExpected, valueToStore)
     }
     
     func test_decoding_from_data() throws {
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(mockEntries.radioData)
         let decoded = try decoder.decode(Specifier.Radio.self, from: data)
         
@@ -72,7 +72,7 @@ class RadioTests: XCTestCase {
             defaultValue: "option_1",
             titles: ["Option 1", "Option 2", "Option 3"],
             values: ["option_1", "option_2", "option_3"],
-            container: mockEntries.mockStorable
+            container: mockEntries.storable
         )
         let radio = Specifier.Radio(
             title: "Radio Option",
@@ -151,7 +151,7 @@ class RadioTests: XCTestCase {
         """.data(using: .utf8)
         
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(radioData)
         let decoded = try decoder.decode(Specifier.Radio.self, from: data)
         
@@ -185,7 +185,7 @@ class RadioTests: XCTestCase {
         """.data(using: .utf8)
         
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(radioData)
         let decoded = try decoder.decode(Specifier.Radio.self, from: data)
         

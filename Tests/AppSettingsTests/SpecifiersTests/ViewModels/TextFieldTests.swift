@@ -30,7 +30,7 @@ final class TextFieldTests: XCTestCase {
         
         // When
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = mockEntries.mockStorable
+        decoder.userInfo[Specifier.repository] = mockEntries.storable
         let textField = try decoder.decode(Specifier.TextField.self, from: json)
         
         // Then
@@ -46,7 +46,7 @@ final class TextFieldTests: XCTestCase {
         let characteristic = Specifier.TextField.Characteristic(
             key: "username",
             defaultValue: "guest",
-            container: mockEntries.mockStorable
+            container: mockEntries.storable
         )
         let textField = Specifier.TextField(
             title: "Username",
@@ -125,7 +125,7 @@ final class TextFieldTests: XCTestCase {
         """.data(using: .utf8)
         
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(textFieldData)
         let decoded = try decoder.decode(Specifier.TextField.self, from: data)
         
@@ -160,7 +160,7 @@ final class TextFieldTests: XCTestCase {
         """.data(using: .utf8)
         
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(textFieldData)
         let decoded = try decoder.decode(Specifier.TextField.self, from: data)
         

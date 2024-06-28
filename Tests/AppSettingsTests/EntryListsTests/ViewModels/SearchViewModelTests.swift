@@ -7,35 +7,37 @@ import ViewInspector
 import XCTest
 
 final class SearchViewModelTests: XCTestCase {
-    var sut: SearchViewModel!
-    var entries: [any SettingEntry]!
+    var sut: SettingsRendererView.ViewModel!
     var cancellable: AnyCancellable?
     
     override func setUpWithError() throws {
         try super.setUpWithError()
-        let findable: [any SettingSearchable] = [
-            mockEntries.radio,
-            mockEntries.multiValue,
-            mockEntries.slider
-        ]
         
         let innerEntries: [any SettingEntry] = [
             mockEntries.radio,
             mockEntries.multiValue,
             mockEntries.slider
         ]
-        entries = [
+        
+        mockEntries.reader.entries =  [
             mockEntries.childPane(with: innerEntries),
         ]
-        sut = .init(entries: entries, findable: findable)
+        
+        mockEntries.reader.findable = [
+            mockEntries.radio,
+            mockEntries.multiValue,
+            mockEntries.slider
+        ]
+        
+        sut = .init(mockEntries.reader)
     }
 
     override func tearDownWithError() throws {
         cancellable?.cancel()
         cancellable = nil
-        entries = nil
         sut = nil
-        mockEntries.mockStorable.resetResults()
+        mockEntries.storable.resetResults()
+        mockEntries.reader.resetAllEntries()
         try super.tearDownWithError()
     }
     
@@ -44,7 +46,7 @@ final class SearchViewModelTests: XCTestCase {
         let expectation = expectation(description: "All results are returned")
         
         // when
-        let expectedCount = entries.count
+        let expectedCount = mockEntries.reader.entries.count
         let searchString = ""
         
         // then
@@ -140,8 +142,7 @@ final class SearchViewModelTests: XCTestCase {
         let expectation = expectation(description: "Only 2 values are returned")
         
         // when
-        let expectedCount = entries.count
-        let searchString = MockEntries.Radio.title
+        let expectedCount = mockEntries.reader.entries.count
         
         // then
         cancellable = sut.$visibleEntries.dropFirst(2).sink(receiveValue: { [weak self] result in
@@ -150,7 +151,7 @@ final class SearchViewModelTests: XCTestCase {
             expectation.fulfill()
         })
         
-        sut.searchText = searchString
+        sut.searchText = MockEntries.Radio.title
         await sut.resetUserDefaults()
         
         await fulfillment(of: [expectation], timeout: 1)

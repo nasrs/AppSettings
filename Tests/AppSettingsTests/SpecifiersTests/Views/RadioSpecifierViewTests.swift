@@ -28,14 +28,14 @@ final class RadioSpecifierViewTests: XCTestCase {
                                       "test_2",
                                       "test_3",
                                   ],
-                                  container: mockEntries.mockStorable)
+                                  container: mockEntries.storable)
         )
     }
 
     override func tearDownWithError() throws {
         viewModel = nil
         cancellable = nil
-        mockEntries.mockStorable.resetResults()
+        mockEntries.storable.resetResults()
         try super.tearDownWithError()
     }
     
@@ -91,7 +91,7 @@ final class RadioSpecifierViewTests: XCTestCase {
         
         var radioSpecifier = RadioSpecifierView(viewModel: viewModel, searchActive: false)
         
-        cancellable = mockEntries.mockStorable.$results.dropFirst().sink(receiveValue: { received in
+        cancellable = mockEntries.storable.$results.dropFirst().sink(receiveValue: { received in
             do {
                 let receivedValue = try XCTUnwrap(received["user_defaults_key"] as? String)
                 XCTAssertEqual(receivedValue, "test_2")

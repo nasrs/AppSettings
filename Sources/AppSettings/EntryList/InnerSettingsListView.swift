@@ -4,13 +4,13 @@ import SwiftUI
 
 struct InnerSettingsListView: View {
     @EnvironmentObject private var searchable: SearchableEntries
-    @ObservedObject private var viewModel: SearchViewModel
+    @ObservedObject private var viewModel: InnerSettingsListView.ViewModel
     @State private var reseting: Bool = false
     private let title: String
     
     init(entries: [any SettingEntry], title: String) {
         self.title = title
-        viewModel = SearchViewModel(entries: entries)
+        viewModel = .init(entries: entries)
     }
     
     var body: some View {

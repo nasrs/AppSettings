@@ -20,7 +20,7 @@ final class SliderSpecifierViewTests: XCTestCase {
         viewModel = nil
         cancellable?.cancel()
         cancellable = nil
-        mockEntries.mockStorable.resetResults()
+        mockEntries.storable.resetResults()
         try super.tearDownWithError()
     }
     
@@ -30,7 +30,7 @@ final class SliderSpecifierViewTests: XCTestCase {
         var sliderView = SliderSpecifierView(viewModel: viewModel,
                                              searchActive: false)
         
-        cancellable = mockEntries.mockStorable.$results.dropFirst().sink(receiveValue: { received in
+        cancellable = mockEntries.storable.$results.dropFirst().sink(receiveValue: { received in
             do {
                 let receivedValue = try XCTUnwrap(received[MockEntries.Slider.key] as? Double)
                 XCTAssertEqual(receivedValue, expectedValue, accuracy: 0.0001)
