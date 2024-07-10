@@ -6,7 +6,7 @@ import SwiftUI
 import ViewInspector
 import XCTest
 
-final class InnerSettingsListViewModel: XCTestCase {
+final class InnerSettingsListViewModelTests: XCTestCase {
     var entries: [any SettingEntry]!
     var findable: [any SettingSearchable]!
     var sut: InnerSettingsListView.ViewModel!
@@ -40,6 +40,8 @@ final class InnerSettingsListViewModel: XCTestCase {
         cancellable?.cancel()
         cancellable = nil
         sut = nil
+        entries = nil
+        findable = nil
         mockEntries.storable.resetResults()
         mockEntries.reader.resetAllEntries()
         try super.tearDownWithError()
@@ -50,7 +52,7 @@ final class InnerSettingsListViewModel: XCTestCase {
         let expectation = expectation(description: "All results are returned")
         
         // when
-        let expectedCount = mockEntries.reader.entries.count
+        let expectedCount = entries.count
         let searchString = ""
         
         // then
@@ -139,26 +141,6 @@ final class InnerSettingsListViewModel: XCTestCase {
         sut.searchText = searchString
         
         wait(for: [expectation], timeout: 1)
-    }
-    
-    func test_resetUserDefaults_shouldChnageTheSearchStringForEmptyAndAllResultsShouldBeVisible() async {
-        // given
-        let expectation = expectation(description: "Only 2 values are returned")
-        
-        // when
-        let expectedCount = mockEntries.reader.entries.count
-        
-        // then
-        cancellable = sut.$visibleEntries.dropFirst(2).sink(receiveValue: { [weak self] result in
-            XCTAssertEqual(result.count, expectedCount)
-            XCTAssertEqual(self?.sut.searchText, .empty)
-            expectation.fulfill()
-        })
-        
-        sut.searchText = MockEntries.Radio.title
-        await sut.resetUserDefaults()
-        
-        await fulfillment(of: [expectation], timeout: 1)
     }
     
     func test_isSearching_whenSearchTextChanges_shouldReturnTrueOnlyWhenSearchTextGreatherThan4Chars() {

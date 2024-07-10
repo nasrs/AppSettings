@@ -6,7 +6,9 @@ struct InnerSettingsListView: View {
     @EnvironmentObject private var searchable: SearchableEntries
     @ObservedObject private var viewModel: InnerSettingsListView.ViewModel
     @State private var reseting: Bool = false
-    private let title: String
+    let title: String
+    // only valid for unit testing purposes
+    var didAppear: ((Self) -> Void)?
     
     init(entries: [any SettingEntry], title: String) {
         self.title = title
@@ -20,6 +22,7 @@ struct InnerSettingsListView: View {
             .searchable(text: $viewModel.searchText,
                         prompt: "Insert title or key")
             .onAppear(perform: {
+                didAppear?(self)
                 viewModel.searchable = searchable
             })
     }
@@ -64,5 +67,8 @@ struct InnerSettingsListView: View {
                                                    ])),
     ]
     
-    return InnerSettingsListView(entries: entries, title: "Screen title")
+    return InnerSettingsListView(
+        entries: entries,
+        title: "Screen title"
+    )
 }
