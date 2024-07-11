@@ -2,12 +2,6 @@
 
 import Foundation
 
-public protocol SettingsBundleReading {
-    var entries: [any SettingEntry] { get }
-    var findable: [any SettingSearchable] { get }
-    func resetDefaults() async
-}
-
 public struct SettingsBundleReader: SettingsBundleReading {
     
     // MARK: Public
