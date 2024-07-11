@@ -21,12 +21,17 @@ public struct SettingsBundleReader: SettingsBundleReading {
     var repository: RepositoryStorable
     static var shared: SettingsBundleReading?
     
+    // this property is preventing a possible bad usage of the initialising functions
+    private static var uninitialised = true
+    
     // MARK: Private
 
     private var rootFileName: String
     private var bundleFileName: String
     
-    /// Setup is responsible for launch the unwrap of all objects and the corresponding relationships
+    /// Setup is responsible for launch the unwrap of all objects and the corresponding relationships.
+    /// This method is completely safe and attempts to not interfere with the normal launching of main app
+    /// a task is used in order to avoid a possible UI irresponsiveness
     /// - Parameters:
     ///   - userDefaults: by default "UserDefaults.standard" also possible to inject some object compliant with RepositoryStorable
     ///   - rootFileName: name of the "root" plist file on the bundle. Default is "Root"
@@ -34,16 +39,21 @@ public struct SettingsBundleReader: SettingsBundleReading {
     public static func setup(repository: RepositoryStorable = UserDefaults.standard,
                              rootFileName: String = "Root",
                              bundleFileName: String = "Settings") {
-        guard SettingsBundleReader.shared == nil else { return }
-        SettingsBundleReader(repository: repository,
-                             rootFileName: rootFileName,
-                             bundleFileName: bundleFileName)
+        guard SettingsBundleReader.shared == nil, SettingsBundleReader.uninitialised else { return }
+        
+        Task {
+            await SettingsBundleReader(repository: repository,
+                                       rootFileName: rootFileName,
+                                       bundleFileName: bundleFileName)
+        }
     }
     
     @discardableResult
     init?(repository: RepositoryStorable,
           rootFileName: String,
-          bundleFileName: String) {
+          bundleFileName: String) async {
+        guard SettingsBundleReader.uninitialised else { return nil }
+        SettingsBundleReader.uninitialised = false
         self.repository = repository
         self.rootFileName = rootFileName
         self.bundleFileName = bundleFileName
