@@ -10,7 +10,7 @@ public protocol SettingsBundleReading {
     func resetDefaults() async
 }
 
-public struct SettingsBundleReaderRefactor: SettingsBundleReading {
+public struct SettingsBundleReader: SettingsBundleReading {
     // MARK: Public
 
     public var entries: [any SettingEntry] = []
@@ -35,7 +35,7 @@ public struct SettingsBundleReaderRefactor: SettingsBundleReading {
                              rootFileName: String = "Root",
                              bundleFileName: String = "Settings") {
         guard SettingsBundleReader.shared == nil else { return }
-        SettingsBundleReaderRefactor(repository: repository,
+        SettingsBundleReader(repository: repository,
                              rootFileName: rootFileName,
                              bundleFileName: bundleFileName)
     }
@@ -63,7 +63,7 @@ public struct SettingsBundleReaderRefactor: SettingsBundleReading {
 
 // MARK: Unwrapping creating relationships between objects
 
-extension SettingsBundleReaderRefactor {
+extension SettingsBundleReader {
     /// Intent to put in just 1 place the parsing of the objects able to be searched
     /// - Parameter settings: entries to be parsed
     /// - Returns: the list os entries from "settings" that are compliant with SettingSearchable
@@ -212,7 +212,7 @@ extension SettingsBundleReaderRefactor {
     }
 }
 
-extension SettingsBundleReaderRefactor {
+extension SettingsBundleReader {
     // MARK: Constants
 
     private enum Constants {
