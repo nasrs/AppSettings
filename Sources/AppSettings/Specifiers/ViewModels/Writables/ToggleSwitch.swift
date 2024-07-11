@@ -4,7 +4,7 @@ import Foundation
 
 extension Specifier {
     public class ToggleSwitch: SettingSearchable {
-        public var id: UUID = .init()
+        public var id: UUID
         public let type: Kind = .toggleSwitch
         public let title: String
         @Published public internal(set) var characteristic: Characteristic
@@ -27,6 +27,7 @@ extension Specifier {
 
         public required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = .init()
             title = try container.decode(String.self, forKey: .title)
         
             let specifierKey = try container.decode(String.self, forKey: .specifierKey)

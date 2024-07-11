@@ -5,7 +5,7 @@ import Foundation
 extension Specifier {
     /// Used to identify the content of the next screen
     public class ChildPane: SettingEntry {
-        public var id: UUID = .init()
+        public var id: UUID
         public let type: Kind = .childPane
         public let title: String
         public let characteristic: Characteristic
@@ -23,6 +23,7 @@ extension Specifier {
         
         public required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = .init()
             title = try container.decode(String.self, forKey: .title)
             let fileName = try container.decode(String.self, forKey: .fileName)
             accessibilityIdentifier = title.replacingOccurrences(of: " ", with: "_").lowercased() + "_navigation"

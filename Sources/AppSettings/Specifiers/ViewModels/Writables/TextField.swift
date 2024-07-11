@@ -5,7 +5,7 @@ import Foundation
 extension Specifier {
     public class TextField: SettingSearchable {
         @Published public internal(set) var characteristic: Characteristic
-        public var id: UUID = .init()
+        public var id: UUID
         public let type: Kind = .textField
         public let title: String
         public let accessibilityIdentifier: String
@@ -27,6 +27,7 @@ extension Specifier {
 
         public required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = .init()
             title = try container.decodeIfPresent(String.self, forKey: .title) ?? .empty
             
             let specifierKey = try container.decode(String.self, forKey: .specifierKey)

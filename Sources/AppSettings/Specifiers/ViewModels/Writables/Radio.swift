@@ -5,7 +5,7 @@ import Foundation
 extension Specifier {
     public class Radio: SettingSearchable {
         @Published public internal(set) var characteristic: Characteristic
-        public var id: UUID = .init()
+        public var id: UUID
         public let type: Kind = .radio
         public let title: String
         public let footerText: String?
@@ -29,6 +29,7 @@ extension Specifier {
         
         public required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = .init()
             title = try container.decodeIfPresent(String.self, forKey: .title) ?? .empty
             footerText = try container.decodeIfPresent(String.self, forKey: .footer)
             

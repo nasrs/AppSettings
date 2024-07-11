@@ -5,7 +5,7 @@ import Foundation
 extension Specifier {
     /// Used to identify the section of a set of entries
     public class Group: SettingEntry {
-        public var id: UUID = .init()
+        public var id: UUID
         public let type: Kind = .group
         public let title: String
         public let footerText: String?
@@ -23,6 +23,7 @@ extension Specifier {
         
         public required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
+            id = .init()
             title = try container.decodeIfPresent(String.self, forKey: .title) ?? .empty
             footerText = try container.decodeIfPresent(String.self, forKey: .footer)
             characteristic = .init()

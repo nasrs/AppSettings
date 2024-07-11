@@ -5,7 +5,7 @@ import Foundation
 extension Specifier {
     public class Slider: SettingSearchable {
         @Published public internal(set) var characteristic: Characteristic
-        public var id: UUID = .init()
+        public var id: UUID
         public let type: Kind = .slider
         public let title: String = .empty
         public let accessibilityIdentifier: String
@@ -31,6 +31,7 @@ extension Specifier {
             let maxValue = try container.decode(Double.self, forKey: .maxValue)
             let defaultValue = try container.decode(Double.self, forKey: .defaultValue)
             
+            id = .init()
             accessibilityIdentifier = "\(specifierKey)_slider"
             shouldReset = try container.decodeIfPresent(Bool.self, forKey: .restartable) ?? true
             

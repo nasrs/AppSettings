@@ -5,7 +5,7 @@ import Foundation
 extension Specifier {
     public class MultiValue: SettingSearchable {
         @Published public internal(set) var characteristic: Characteristic
-        public var id: UUID = .init()
+        public var id: UUID
         public let type: Kind = .multiValue
         public let title: String
         public let accessibilityIdentifier: String
@@ -36,6 +36,7 @@ extension Specifier {
             accessibilityIdentifier = "\(specifierKey)_picker"
             
             shouldReset = try container.decodeIfPresent(Bool.self, forKey: .restartable) ?? true
+            id = .init()
             
             if let container = decoder.userInfo[Specifier.repository] as? RepositoryStorable {
                 characteristic = .init(key: specifierKey,
