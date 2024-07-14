@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>StringsTable</key>
+	<string>Root</string>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Some Title Text</string>
+			<key>FooterText</key>
+			<string>Some Footer Text</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Restartable</key>
+			<false/>
+			<key>Title</key>
+			<string>Semaphore Color</string>
+			<key>Key</key>
+			<string>semaphore_color</string>
+			<key>DefaultValue</key>
+			<string>color_green</string>
+			<key>Titles</key>
+			<array>
+				<string>Green</string>
+				<string>Yellow</string>
+				<string>Red</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>color_green</string>
+				<string>color_yellow</string>
+				<string>color_red</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Environment</string>
+			<key>Key</key>
+			<string>environment_preference</string>
+			<key>DefaultValue</key>
+			<string>backend_preference</string>
+			<key>Titles</key>
+			<array>
+				<string>Backend</string>
+				<string>Mock (skip login)</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>backend_preference</string>
+				<string>mock_preference_skip_login</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>Text FieldTitle</string>
+			<key>Key</key>
+			<string>some_key</string>
+			<key>DefaultValue</key>
+			<string>default text</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Toggle title</string>
+			<key>Key</key>
+			<string>toggle_key</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Key</key>
+			<string>radio_key</string>
+			<key>Title</key>
+			<string>Radio Title</string>
+			<key>Type</key>
+			<string>PSRadioGroupSpecifier</string>
+			<key>DefaultValue</key>
+			<string>title_b</string>
+			<key>Titles</key>
+			<array>
+				<string>Title A</string>
+				<string>Title B</string>
+				<string>Title C</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<string>title_a</string>
+				<string>title_b</string>
+				<string>title_c</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

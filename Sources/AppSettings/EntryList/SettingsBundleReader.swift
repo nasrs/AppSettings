@@ -13,21 +13,32 @@ public protocol SettingsBundleReading {
 public struct SettingsBundleReader: SettingsBundleReading {
     // MARK: Public
 
-    public var entries: [any SettingEntry] = []
-    public var findable: [any SettingSearchable] = []
+    public private(set) var entries: [any SettingEntry] = []
+    public private(set) var findable: [any SettingSearchable] = []
     
     // MARK: Internal
 
-    var repository: RepositoryStorable
+    private(set) var repository: RepositoryStorable
+    private(set) var rootFileName: String
+    private(set) var bundleFileName: String
     static var shared: SettingsBundleReading?
     
     // this property is preventing a possible bad usage of the initialising functions
     private static var uninitialised = true
+    private let bundle: Bundle
     
+    #if DEBUG
+        // for testing purposes
+        static var didFinishInit: ((Self) -> Void)?
+    
+        static func resetStatics() {
+            shared = nil
+            didFinishInit = nil
+            uninitialised = true
+        }
+    #endif
+        
     // MARK: Private
-
-    private var rootFileName: String
-    private var bundleFileName: String
     
     /// Setup is responsible for launch the unwrap of all objects and the corresponding relationships.
     /// This method is completely safe and attempts to not interfere with the normal launching of main app
@@ -37,12 +48,14 @@ public struct SettingsBundleReader: SettingsBundleReading {
     ///   - rootFileName: name of the "root" plist file on the bundle. Default is "Root"
     ///   - bundleFileName: "Settings.bundle" name of the main *.*bundle folder. Default Settings.bundle
     public static func setup(repository: RepositoryStorable = UserDefaults.standard,
+                             bundle: Bundle = Bundle.main,
                              rootFileName: String = "Root",
                              bundleFileName: String = "Settings") {
         guard SettingsBundleReader.shared == nil, SettingsBundleReader.uninitialised else { return }
         
         Task {
             await SettingsBundleReader(repository: repository,
+                                       bundle: bundle,
                                        rootFileName: rootFileName,
                                        bundleFileName: bundleFileName)
         }
@@ -50,6 +63,7 @@ public struct SettingsBundleReader: SettingsBundleReading {
     
     @discardableResult
     init?(repository: RepositoryStorable,
+          bundle: Bundle,
           rootFileName: String,
           bundleFileName: String) async {
         guard SettingsBundleReader.uninitialised else { return nil }
@@ -57,9 +71,11 @@ public struct SettingsBundleReader: SettingsBundleReading {
         self.repository = repository
         self.rootFileName = rootFileName
         self.bundleFileName = bundleFileName
+        self.bundle = bundle
         entries = unwrapSpecifiers(fileName: rootFileName, parent: nil)
         findable = parseSearchableEntries(settings: entries)
         SettingsBundleReader.shared = self
+        SettingsBundleReader.didFinishInit?(self)
     }
     
     public func resetDefaults() async {
@@ -102,13 +118,14 @@ extension SettingsBundleReader {
     /// - Parameter fileName: name of the file to be unwrapped without extension (plist is the only value valid)
     /// - Returns: The list on entries possible to be parse from the file provided
     private func unwrapSpecifiers(fileName: String, parent: String?) -> [any SettingEntry] {
-        guard let settingsURL = Bundle.main.url(
+        guard let settingsURL = bundle.url(
             forResource: fileName,
             withExtension: Constants.plistFile,
             subdirectory: Constants.bundleFile(bundleFileName)
         ),
-            let settings = NSDictionary(contentsOf: settingsURL),
-            let preferences = settings[Constants.preferences] as? [NSDictionary] else {
+              let settings = NSDictionary(contentsOf: settingsURL),
+              let preferences = settings[Constants.preferences] as? [NSDictionary]
+        else {
             return []
         }
         
@@ -230,7 +247,7 @@ extension SettingsBundleReader {
         static let preferences = "PreferenceSpecifiers"
         static let plistFile = "plist"
         static func bundleFile(_ fileName: String) -> String {
-            "\(fileName).bundle"
+            fileName.isEmpty ? .empty : "\(fileName).bundle"
         }
     }
 }

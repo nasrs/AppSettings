@@ -25,6 +25,9 @@ let package = Package(
                     dependencies: [
                         "AppSettings",
                         "ViewInspector"
+                    ],
+                    resources: [
+                        .process("Resources")
                     ]),
     ]
 )

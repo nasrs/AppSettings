@@ -13,7 +13,7 @@ extension Specifier {
         case toggleSwitch = "PSToggleSwitchSpecifier"
         case slider = "PSSliderSpecifier"
         case radio = "PSRadioGroupSpecifier"
-        // possible to exist but not rendered on Settings so the supporto will exist but the object itself won't be unwrapped
+        // possible to exist but not rendered on Settings so the support will exist but the object itself won't be unwrapped
         case titleValue = "PSTitleValueSpecifier"
         
         public var friendlyName: String {
