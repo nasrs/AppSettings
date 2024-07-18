@@ -24,7 +24,7 @@ final class SliderTests: XCTestCase {
         // Given
         let jsonData = try XCTUnwrap(mockEntries.sliderData)
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         
         // When
         let slider = try decoder.decode(Specifier.Slider.self,
@@ -44,7 +44,7 @@ final class SliderTests: XCTestCase {
             defaultValue: 0,
             minValue: 0,
             maxValue: 100,
-            container: mockEntries.mockStorable
+            container: mockEntries.storable
         )
         let slider = Specifier.Slider(characteristic: characteristic)
         slider.characteristic.storedContent = 50
@@ -96,7 +96,7 @@ final class SliderTests: XCTestCase {
         """.data(using: .utf8)
         
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(sliderData)
         let decoded = try decoder.decode(Specifier.Slider.self, from: data)
         
@@ -127,7 +127,7 @@ final class SliderTests: XCTestCase {
         """.data(using: .utf8)
         
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(sliderData)
         let decoded = try decoder.decode(Specifier.Slider.self, from: data)
         

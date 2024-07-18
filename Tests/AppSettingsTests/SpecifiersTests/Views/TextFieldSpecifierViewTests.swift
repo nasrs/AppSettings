@@ -11,7 +11,7 @@ final class TextFieldSpecifierViewTests: XCTestCase {
     override func tearDownWithError() throws {
         cancellable?.cancel()
         cancellable = nil
-        mockEntries.mockStorable.resetResults()
+        mockEntries.storable.resetResults()
         try super.tearDownWithError()
     }
     
@@ -69,11 +69,11 @@ final class TextFieldSpecifierViewTests: XCTestCase {
         let viewModel = Specifier.TextField(title: "Test Title",
                                             characteristic: .init(key: "test_key",
                                                                   defaultValue: "test_default_value",
-                                                                  container: mockEntries.mockStorable))
+                                                                  container: mockEntries.storable))
         let searchActive = true
         var sut = TextFieldSpecifierView(viewModel: viewModel, searchActive: searchActive)
         
-        cancellable = mockEntries.mockStorable.$results.dropFirst().sink(receiveValue: { received in
+        cancellable = mockEntries.storable.$results.dropFirst().sink(receiveValue: { received in
             do {
                 let receivedValue = try XCTUnwrap(received["test_key"] as? String)
                 XCTAssertEqual(receivedValue, "the new content")

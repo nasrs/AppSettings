@@ -20,6 +20,7 @@ All Specifiers models are Codable leaving also open, in future, the possibility 
 
 ## Key Features
 
+* launch makes use of async/await swift feature, under the hood, making it safe to be launched in any place that is more convinent to the app
 * Setting search: AppSettings does provide an intuitive and easy to use search that will allow to get any content from our Settings without needing to remember the exact path.
 * Searching types: by exact string, unordered search, ordered search
 * Customisable Settings: Easily change settings from your app without need to jump between Settings.app and your app.
@@ -58,7 +59,7 @@ struct SampleSettingsSwiftUIApp: App {
      
      init() {
          // AppSettings object initialiser. This object will be responsible to start `AppSettings` singleton and configure all valid entries.
-        SettingsBundleReader()
+        SettingsBundleReader.setup()
      }
      
      var body: some Scene {
@@ -78,14 +79,13 @@ struct SampleSettingsSwiftUIApp: App {
 ### UIKit
 
 ```swift
-import MyRWSettings
+import AppSettings
 import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // AppSettings initialiser. This object will be responsible to start `AppSettings` singleton and configure all valid entries.
-        SettingsBundleReader()
+        SettingsBundleReader.setup()
         return true
     }
     ...
@@ -115,11 +115,11 @@ class ViewController: UIViewController {
 ### Sample Project and Tests
 
 #### Sample
-We are working on a sample project that demonstrates the full capabilities of AppSettings. This sample project will showcase various customization options and best practices for integrating settings into your app. Once finished, the sample project will be available in the repository to help you get started quickly and effectively.
+Actually working on a sample project that demonstrates the full capabilities of AppSettings. This sample project will showcase various customization options and best practices for integrating settings into your app. Once finished, the sample project will be available in the repository to help you get started quickly and effectively.
 
 #### Unit Tests
 
-Please note that unit tests for AppSettings are currently under development. As a result, they are not yet included in the public project. We are committed to delivering robust and reliable unit tests to ensure the highest quality and stability of the AppSettings library. Stay tuned for updates!
+Most of the objects and features are covered above 70%, but not all, so the main objective is to continue increasing the tool unit tests, in order to ensure its good functioning and reliability.
 
 ## Contributing
 

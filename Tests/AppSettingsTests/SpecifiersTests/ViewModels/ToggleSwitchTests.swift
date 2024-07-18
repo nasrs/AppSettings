@@ -29,7 +29,7 @@ final class ToggleSwitchTests: XCTestCase {
         
         // When
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let decoded = try decoder.decode(Specifier.ToggleSwitch.self, from: data)
         
         // Then
@@ -119,7 +119,7 @@ final class ToggleSwitchTests: XCTestCase {
         """.data(using: .utf8)
         
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(toggleSwitchData)
         let decoded = try decoder.decode(Specifier.ToggleSwitch.self, from: data)
         
@@ -150,7 +150,7 @@ final class ToggleSwitchTests: XCTestCase {
         """.data(using: .utf8)
         
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let data = try XCTUnwrap(toggleSwitchData)
         let decoded = try decoder.decode(Specifier.ToggleSwitch.self, from: data)
         
