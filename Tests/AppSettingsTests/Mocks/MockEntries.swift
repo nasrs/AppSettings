@@ -16,8 +16,9 @@ protocol EntriesMocker {
 final class MockEntries {
     static let shared: MockEntries = .init()
     
-    let mockStorable: MockRepositoryStorable = MockRepositoryStorable()
-
+    let storable = MockRepositoryStorable()
+    let reader = MockReader()
+    
     lazy var textField: Specifier.TextField = {
         .init(
             title: TextField.title,
@@ -25,7 +26,7 @@ final class MockEntries {
                 key: TextField.key,
                 defaultValue: TextField.defaultValue,
                 keyboard: TextField.keyboardType,
-                container: mockStorable
+                container: storable
             )
         )
     }()
@@ -38,7 +39,7 @@ final class MockEntries {
                 defaultValue: MultiValue.defaultValue,
                 titles: MultiValue.titles,
                 values: MultiValue.values,
-                container: mockStorable)
+                container: storable)
         )
     }()
     
@@ -51,7 +52,7 @@ final class MockEntries {
                 defaultValue: Radio.defaultValue,
                 titles: Radio.titles,
                 values: Radio.values,
-                container: mockStorable)
+                container: storable)
         )
     }()
     
@@ -62,7 +63,7 @@ final class MockEntries {
                 defaultValue: Slider.defaultValue,
                 minValue: Slider.minimumValue,
                 maxValue: Slider.maximumValue,
-                container: mockStorable
+                container: storable
             )
         )
     }()
@@ -73,7 +74,7 @@ final class MockEntries {
             characteristic: .init(
                 key: ToggleSwitch.key,
                 defaultValue: ToggleSwitch.defaultValue,
-                container: mockStorable
+                container: storable
             )
         )
     }()

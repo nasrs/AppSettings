@@ -20,7 +20,7 @@ final class ToggleSpecifierViewTests: XCTestCase {
         cancellable?.cancel()
         cancellable = nil
         viewModel = nil
-        mockEntries.mockStorable.resetResults()
+        mockEntries.storable.resetResults()
         try super.tearDownWithError()
     }
     
@@ -54,7 +54,7 @@ final class ToggleSpecifierViewTests: XCTestCase {
                                              searchActive: false)
         let expectedValue = !viewModel.characteristic.defaultValue
         
-        cancellable = mockEntries.mockStorable.$results.dropFirst().sink(receiveValue: { received in
+        cancellable = mockEntries.storable.$results.dropFirst().sink(receiveValue: { received in
             do {
                 let receivedValue = try XCTUnwrap(received[MockEntries.ToggleSwitch.key] as? Bool)
                 XCTAssertEqual(receivedValue, expectedValue)

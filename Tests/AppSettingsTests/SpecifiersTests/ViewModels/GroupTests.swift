@@ -65,7 +65,7 @@ final class GroupTests: XCTestCase {
     func testGroupDecoding() throws {
         let jsonData = try XCTUnwrap(mockEntries.groupData)
         let decoder = JSONDecoder()
-        decoder.userInfo[Specifier.repository] = MockEntries.shared.mockStorable
+        decoder.userInfo[Specifier.repository] = MockEntries.shared.storable
         let decodedGroup = try decoder.decode(Specifier.Group.self, from: jsonData)
         
         XCTAssertEqual(decodedGroup.title, MockEntries.Group.title)
